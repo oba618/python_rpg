@@ -1,8 +1,8 @@
-import text
+from process import Process
 
 
 def main():
-	text.start()
+	Process().start()
 
 if __name__ == '__main__':
 	main()

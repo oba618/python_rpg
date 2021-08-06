@@ -1,89 +1,71 @@
-import event
-from map import Map
-from player import Player
-from monster import Monster
-from buttle import Buttle
+class Text():
+    PLAYER_NAME_MAX_LENGTH = 10
 
-PLAYER_MAX_HP = 200
+    #title
+    TITLE = [
+        '＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃',
+        '＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃',
+        '',
+        '   RPG created by Python',
+        '',
+        '＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃',
+        '＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃',
+        '＃＃＃　ゲームスタート　＃＃＃',
+    ]
+
+    #text
+    INPUT_PLAYER_NAME = '名前を入力してください: '
+    MES_PLAYER_NAME_IS_TOO_LONG = '名前が長すぎます。（10文字まで）'
+    QUESTION_ANSWER = '"{}" これで良いですか？\n"yes" または "no" で応答してください [y/N]:'
+    WELCOME = 'ようこそ '
+    INPUT_YES_OR_NO = ''
+    ENTER = '\n'
+
+    #map
+    MES_CONFIRMATION = \
+        '本当に良いですか？\n' \
+        + '"yes" または "no" で応答してください [y/N]'
+    MES_HOW_TO_PLAY = \
+        '＝＝＝＝＝＝＝＝＝　操作方法　＝＝＝＝＝＝＝＝＝\n' \
+        + '[終了　　　：q ][上　　　　：w ][アイテム　：e ]\n' \
+        + '[左　　　　：a ][下　　　　：s ][右　　　　：d ]\n' \
+        + '[ステータス：z ][ヘルプ　　：x ]\n' \
+        + '＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝\n'
+    MES_CAN_NOT_USE_KEY = '!!! 無効なキーです !!!'
+    MES_CAN_NOT_MOVE = '!!! 移動できません !!!'
+    MES_GET_SIELD = '勇者の盾を手に入れた！'
+    MES_GET_WEAPON = '勇者の剣を手に入れた！'
+    MES_GET_HERBS = '薬草を手に入れた！'
+
+    # buttle
+    MES_HOW_TO_BUTTLE = \
+        '＝＝＝＝＝＝＝＝＝　操作方法　＝＝＝＝＝＝＝＝＝\n' \
+        + '[終了　　　：q ][　　　　　：w ][アイテム　：e ]\n' \
+        + '[こうげき　：a ][まほう　　：s ][にげる　　：d ]\n' \
+        + '[ステータス：z ][ヘルプ　　：x ]\n' \
+        + '＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝\n'
+    PLAYER_STATUS = \
+        '{}\n' \
+        + 'HP[{}/{}] MP[{}/{}]\n'
+    MONSTER_STATUS = \
+        '{}\n' \
+        + 'HP[{}]\n'
+    MES_APPEAR_MONSTER = '{}が、あらわれた！'
+    MES_CHOOSE_ACTION = '何をしますか？'
+    MES_MP_IS_EMPTY = 'MPが空だった！'
+    KNOCK_OUT_MONSTER = '{}を、たおした！'
+    KNOCK_OUT_PLAYER = '{}は、ちからつきた...'
+    MES_ATTACK_FROM_PLAYER = '{}は、こうげきした！'
+    MES_ATTACK_FROM_MONSTER = '{}のこうげき！'
+    MES_DAMAGE = '{}のダメージ！'
+    MES_MAGIC = '{}は、まほうをとなえた！'
+    MES_GET_EXP = '{}のけいけんちをかくとく！'
+    MES_LEVEL_UP = 'レベルアップ！ {}はレベル{}になった！'
+    MES_ESCAPE = 'にげた！'
+    MES_CAN_NOT_ESCAPE = 'にげることに、しっぱいした！'
+
+    GAME_OVER = '\n ... ゲーム　オーバー ... \n\n'
+    GAME_CLEAR = '\n=== ゲーム　クリア === \n\n'
 
 
-
-#text
-GAME_START = '=== ゲーム　スタート === \n'
-INPUT_PLAYER_NAME = '名前を入力してください: '
-QUESTION_ANSWER = ' これで良いですか？ \n'
-WELCOME = 'ようこそ '
-INPUT_YES_OR_NO = ' "yes" または "no" で応答してください [y/N]: '
-ENTER = '\n'
-
-GAME_OVER = ' ... ゲーム　オーバー ... \n'
-GAME_CLEAR = '=== ゲーム　クリア === \n'
-
-#map
-MES_HOW_TO_PLAY = "=== 操作方法 [上：w][下：s][左：a][右：d][終了：q] ===\n"
-MES_CAN_NOT_USE_KEY = "!!! 無効なキーです !!!"
-MES_CAN_NOT_MOVE = "!!! 移動できません !!!"
-
-# buttle
-MES_HOW_TO_BUTTLE = "=== 操作方法 [こうげき：1][まほう：2][にげる：3] ==="
-PLAYER_STATUS = '{}: HP[{}/{}]'
-MONSTER_STATUS = '{}: HP[{}]'
-MES_APPEAR_MONSTER = '{}が、あらわれた！'
-KNOCK_OUT_MONSTER = '{}を、たおした！_▽'
-KNOCK_OUT_PLAYER = '{}は、ちからつきた...'
-MES_ATTACK = '{}は、こうげきした！'
-MES_MAGIC = '{}は、まほうをとなえた！'
-MES_ESCAPE = 'にげた！_▽'
-WAITE_ENTER = '▽'
-
-def start():
-    """スタート
-    """
-    event.clear()
-    print(GAME_START)
-
-    # プレイヤーの名前を入力
-    player_name = ''
-    while not player_name:
-        player_name = input(INPUT_PLAYER_NAME)
-        player_name_answer = input(player_name + QUESTION_ANSWER + INPUT_YES_OR_NO)
-
-        # プレイヤーの応答がYesか否か
-        if event.is_yes(player_name_answer):
-            break
-        else:
-            player_name = ''
-            event.clear()
-
-    print(WELCOME + player_name + ENTER)
-
-    player = Player(player_name, PLAYER_MAX_HP)
-    map = Map()
-
-    while True:
-        map.show()
-        map.move()
-
-        # ESCキーを押した場合
-        if map.game_over_flg:
-            event.clear()
-            print(GAME_OVER)
-            break
-
-        # ゴール判定
-        if map.goal_flg is True:
-            event.clear()
-            print(GAME_CLEAR)
-            break
-
-        # エンカウント判定
-        if event.is_encount(map.counter):
-            monster = Monster(map.counter)
-            Buttle.buttle(player, monster)
-
-        # プレイヤーのHPが0以下になった場合
-        if player.hp < 0:
-            event.clear()
-            print(GAME_OVER)
-            break
 
