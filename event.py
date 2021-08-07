@@ -4,7 +4,7 @@ from random import random
 from text import Text
 
 
-class Event():
+class Event:
 
     YES_LIST = [
         'y', 'ye', 'yes', 'Y', 'YE', 'YES',

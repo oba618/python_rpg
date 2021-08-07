@@ -1,4 +1,4 @@
-class Text():
+class Text:
     PLAYER_NAME_MAX_LENGTH = 10
 
     # title

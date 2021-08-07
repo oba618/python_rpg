@@ -31,7 +31,7 @@ MAP = [
 HP_FORMAT = ' HP:[{}/{}] '
 
 
-class Map():
+class Map:
     @property
     def counter(self):
         return self._counter

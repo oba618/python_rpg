@@ -6,8 +6,8 @@ from player import Player
 from text import Text
 
 
-class Process():
-    def start(self):
+class Process:
+    def start():
         """スタート
         """
         # タイトル画面

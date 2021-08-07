@@ -9,7 +9,7 @@ MAGIC = ['ｓ', 's']
 ESCAPE = ['ｄ', 'd']
 
 
-class Buttle():
+class Buttle:
     @property
     def appear_flg(self):
         return self._appear_flg

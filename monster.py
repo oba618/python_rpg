@@ -1,7 +1,7 @@
 from random import randint
 
 
-class Monster():
+class Monster:
     SLIME = 'スライム'
     GOBLINS = 'ゴブリン'
     GOLEM = 'ゴーレム'

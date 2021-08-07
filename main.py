@@ -2,7 +2,8 @@ from process import Process
 
 
 def main():
-	Process().start()
+    Process.start()
+
 
 if __name__ == '__main__':
-	main()
+    main()

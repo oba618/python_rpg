@@ -11,7 +11,7 @@ KEY_LIST = {
 }
 
 
-class Player():
+class Player:
 
     PLAYER_INITIAL_HP = 200
     PLAYER_INITIAL_MP = 5
