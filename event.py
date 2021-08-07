@@ -27,7 +27,9 @@ class Event():
     def is_encount(counter):
         """モンスターと戦闘するか否か
         """
-        return True if int(random() * 10) % 5 == 0 or counter % 10 == 0 else False
+        return True \
+            if int(random() * 10) % 5 == 0 or counter % 10 == 0 \
+            else False
 
     @classmethod
     def confirmation(cls) -> bool:

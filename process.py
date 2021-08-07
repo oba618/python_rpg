@@ -22,7 +22,7 @@ class Process():
             Event.clear()
 
             player_name = input(Text.INPUT_PLAYER_NAME)
-            
+
             # プレイヤー名が長い場合
             if len(player_name) >= Text.PLAYER_NAME_MAX_LENGTH:
                 input(Text.MES_PLAYER_NAME_IS_TOO_LONG)
@@ -34,7 +34,8 @@ class Process():
                 continue
 
             # プレイヤーの応答がYesか否か
-            player_name_answer = input(Text.QUESTION_ANSWER.format(player_name))
+            player_name_answer = \
+                input(Text.QUESTION_ANSWER.format(player_name))
             if Event.is_yes(player_name_answer):
                 break
             else:

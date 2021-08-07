@@ -12,7 +12,7 @@ KEY_LIST = {
 
 
 class Player():
-    
+
     PLAYER_INITIAL_HP = 200
     PLAYER_INITIAL_MP = 5
     PLAYER_INITIAL_POWER = 10
@@ -124,12 +124,12 @@ class Player():
         if field == MapItem.WEAPON.value:
             self.power += 30
             input(Text.MES_GET_WEAPON)
-        
+
         # 盾の場合
         if field == MapItem.SIELD.value:
             self.defense += 10
             input(Text.MES_GET_SIELD)
-        
+
         # 薬の場合
         if field == MapItem.HERBS.value:
             input(Text.MES_GET_HERBS)
@@ -182,7 +182,8 @@ class Player():
             # USEの場合
             elif input_key in KEY_LIST['use']:
                 item_object = self.item_list[select_index]
-                answer = input(Text.USE_ITEM_CONFIRM.format(item_object.description))
+                answer = input(Text.USE_ITEM_CONFIRM.format(
+                    item_object.description))
 
                 # Yesの場合
                 if Event.is_yes(answer):
