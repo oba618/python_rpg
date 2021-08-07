@@ -1,7 +1,7 @@
 class Text():
     PLAYER_NAME_MAX_LENGTH = 10
 
-    #title
+    # title
     TITLE = [
         '＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃',
         '＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃',
@@ -13,7 +13,7 @@ class Text():
         '＃＃＃　ゲームスタート　＃＃＃',
     ]
 
-    #text
+    # text
     INPUT_PLAYER_NAME = '名前を入力してください: '
     MES_PLAYER_NAME_IS_TOO_LONG = '名前が長すぎます。（10文字まで）'
     QUESTION_ANSWER = '"{}" これで良いですか？\n"yes" または "no" で応答してください [y/N]:'
@@ -21,7 +21,7 @@ class Text():
     INPUT_YES_OR_NO = ''
     ENTER = '\n'
 
-    #map
+    # map
     MES_CONFIRMATION = \
         '本当に良いですか？\n' \
         + '"yes" または "no" で応答してください [y/N]'
@@ -31,6 +31,20 @@ class Text():
         + '[左　　　　：a ][下　　　　：s ][右　　　　：d ]\n' \
         + '[ステータス：z ][ヘルプ　　：x ]\n' \
         + '＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝\n'
+    HOW_TO_USE_ITEM = \
+        '＝＝＝＝＝＝＝＝＝　操作方法　＝＝＝＝＝＝＝＝＝\n' \
+        + '[　　　　　　　][上　　　　：w ][とじる　　：x ]\n' \
+        + '[　　　　　　　][下　　　　：s ][　　　　　　　]\n' \
+        + '[　　　　　　　][つかう　　：x ]\n' \
+        + '＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝\n'
+    ITEM_LIST = '＃＃＃＃＃＃＃＃　アイテム一覧　＃＃＃＃＃＃＃＃\n'
+    NOTING_ITEM = 'アイテムがありません。'
+    MES_USE_HERB = 'HPが少し回復した！'
+    MES_USE_EQUIPMENT = '装備品は持っているだけで効果があります'
+    ITEM_LIST_END = '\n＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃\n'
+    USE_ITEM_CONFIRM = \
+        '"{}"を使用します。よろしいですか？\n' \
+        + '"yes" または "no" で応答してください [y/N]'
     MES_CAN_NOT_USE_KEY = '!!! 無効なキーです !!!'
     MES_CAN_NOT_MOVE = '!!! 移動できません !!!'
     MES_GET_SIELD = '勇者の盾を手に入れた！'
@@ -66,6 +80,3 @@ class Text():
 
     GAME_OVER = '\n ... ゲーム　オーバー ... \n\n'
     GAME_CLEAR = '\n=== ゲーム　クリア === \n\n'
-
-
-

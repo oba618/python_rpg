@@ -11,20 +11,22 @@ KEY_LIST = {
     'left': ['a', 'A', 'あ', 'Ａ'],
     'right': ['d', 'D', 'ｄ', 'Ｄ'],
     'esc': ['q', 'Q', 'ｑ', 'Ｑ'],
+    'item': ['e', 'E', 'え', 'E'],
+    'help': ['x', 'X', 'ｘ', 'Ｘ'],
 }
 MAP = [
-    ['B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B'],
-    ['B','P','E','B','E','E','E','E','E','E','E','E','E','E','H','E','E','E','H','B'],
-    ['B','E','E','B','E','E','E','E','E','B','E','E','E','E','E','E','E','E','E','B'],
-    ['B','E','E','B','E','E','B','E','E','B','E','E','B','E','E','B','E','E','E','B'],
-    ['B','E','E','B','E','E','B','E','E','B','H','E','B','E','E','B','E','E','E','B'],
-    ['B','E','E','E','E','E','B','E','E','B','E','E','B','E','E','B','E','E','E','B'],
-    ['B','E','E','B','E','E','B','E','E','B','E','E','B','E','E','B','E','E','E','B'],
-    ['B','E','E','E','E','E','B','E','E','B','E','E','B','E','E','B','E','E','E','B'],
-    ['B','E','S','B','E','E','B','E','E','B','E','E','B','E','E','B','E','E','E','B'],
-    ['B','E','E','E','E','E','B','E','E','E','E','E','B','E','E','E','E','E','E','B'],
-    ['B','E','E','E','E','H','B','W','E','E','E','E','B','E','H','E','E','E','G','B'],
-    ['B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B'],
+    ['B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'],
+    ['B', 'P', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'H', 'E', 'E', 'E', 'H', 'B'],
+    ['B', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'B'],
+    ['B', 'H', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'E', 'B'],
+    ['B', 'H', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'H', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'E', 'B'],
+    ['B', 'H', 'E', 'E', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'E', 'B'],
+    ['B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'E', 'B'],
+    ['B', 'E', 'E', 'E', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'E', 'B'],
+    ['B', 'E', 'S', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'E', 'B'],
+    ['B', 'E', 'E', 'E', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'E', 'B'],
+    ['B', 'E', 'E', 'E', 'E', 'H', 'B', 'W', 'E', 'E', 'E', 'E', 'B', 'E', 'H', 'E', 'E', 'E', 'G', 'B'],
+    ['B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'],
 ]
 HP_FORMAT = ' HP:[{}/{}] '
 
@@ -71,6 +73,14 @@ class Map():
         self._game_over_flg = value
 
     @property
+    def show_item_flg(self):
+        return self._show_item_flg
+
+    @show_item_flg.setter
+    def show_item_flg(self, value):
+        self._show_item_flg = value
+
+    @property
     def field(self):
         return self._field
 
@@ -84,6 +94,7 @@ class Map():
         self._counter = 0
         self._goal_flg = False
         self._game_over_flg = False
+        self._show_item_flg = False
         self._field = ''
 
     def show(self):
@@ -112,12 +123,17 @@ class Map():
                 self.game_over_flg = True
                 break
 
+            # アイテム一覧
+            elif input_key in KEY_LIST['item']:
+                self.show_item_flg = True
+                break
+
             # 下へ
             if input_key in KEY_LIST['down']:
                 next_height = self.now_h + 1
                 self.change_field(next_height, self.now_w)
-                
-            # 左へ 
+
+            # 左へ
             elif input_key in KEY_LIST['left']:
                 next_width = self.now_w - 1
                 self.change_field(self.now_h, next_width)
@@ -152,23 +168,23 @@ class Map():
             self.goal_flg = True
 
         # 空地の場合
-        elif  MAP[height][width] == MapItem.EMPTY.value:
+        elif MAP[height][width] == MapItem.EMPTY.value:
             self._change_field(height, width)
 
         # 剣の場合
-        elif  MAP[height][width] == MapItem.WEAPON.value:
+        elif MAP[height][width] == MapItem.WEAPON.value:
             self._change_field(height, width)
 
             self.field = MapItem.WEAPON.value
 
         # 盾の場合
-        elif  MAP[height][width] == MapItem.SIELD.value:
+        elif MAP[height][width] == MapItem.SIELD.value:
             self._change_field(height, width)
 
             self.field = MapItem.SIELD.value
 
         # 薬の場合
-        elif  MAP[height][width] == MapItem.HERBS.value:
+        elif MAP[height][width] == MapItem.HERBS.value:
             self._change_field(height, width)
 
             self.field = MapItem.HERBS.value
@@ -177,40 +193,40 @@ class Map():
             self.field = MapItem.BLOCK.value
             input(Text.MES_CAN_NOT_MOVE)
 
-    
     def _change_field(self, height, width):
         # 現在位置を空地へ
         MAP[self.now_h][self.now_w] = MapItem.EMPTY.value
 
         # 移動先をPへ
         if height > self.now_h:
-            MAP[self.now_h +1][self.now_w] = MapItem.PLAYER.value
+            MAP[self.now_h + 1][self.now_w] = MapItem.PLAYER.value
             self.now_h += 1
         elif height < self.now_h:
-            MAP[self.now_h -1][self.now_w] = MapItem.PLAYER.value
+            MAP[self.now_h - 1][self.now_w] = MapItem.PLAYER.value
             self.now_h -= 1
         elif width > self.now_w:
-            MAP[self.now_h][self.now_w +1] = MapItem.PLAYER.value
+            MAP[self.now_h][self.now_w + 1] = MapItem.PLAYER.value
             self.now_w += 1
         elif width < self.now_w:
-            MAP[self.now_h][self.now_w -1] = MapItem.PLAYER.value
+            MAP[self.now_h][self.now_w - 1] = MapItem.PLAYER.value
             self.now_w -= 1
 
 
 class MapItem(str, Enum):
     """マップアイテム一覧
     """
-    def __new__(cls, value, map_item, description):
+    def __new__(cls, value, map_item, title, description):
         obj = str.__new__(cls, value)
         obj._value_ = value
         obj.map_item = map_item
+        obj.title = title
         obj.description = description
         return obj
-        
-    BLOCK = 'B', '＃', '侵入不可エリア（壁）'
-    EMPTY = 'E', '　', '何もないフィールド'
-    PLAYER = 'P', 'P ', 'プレイヤーの現在位置'
-    GOAL = 'G', 'G ', 'ゴールの位置'
-    WEAPON = 'W', '剣', '武器/剣'
-    SIELD = 'S', '盾', '防具/盾'
-    HERBS = 'H', '薬', '道具/薬草'
+
+    BLOCK = 'B', '＃', '壁', '侵入不可エリア（壁）'
+    EMPTY = 'E', '　', '空地', '何もないフィールド'
+    PLAYER = 'P', 'P ', 'プレイヤー', 'プレイヤーの現在位置'
+    GOAL = 'G', 'G ', 'ゴール', 'ゴールの位置'
+    WEAPON = 'W', '剣', '勇者の剣', '武器/勇者の剣/持っているだけで攻撃力アップ：'
+    SIELD = 'S', '盾', '勇者の盾', '防具/勇者の盾/持っているだけで防御力アップ'
+    HERBS = 'H', '薬', '薬草', '道具/薬草/使うとHPがすこし回復する'

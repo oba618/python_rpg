@@ -1,6 +1,6 @@
 from buttle import Buttle
 from event import Event
-from map import Map, MapItem
+from map import Map
 from monster import Monster
 from player import Player
 from text import Text
@@ -51,7 +51,7 @@ class Process():
         # マップ移動
         while True:
             map.show()
-            item = map.move()
+            map.move()
 
             # ESCキーを押した場合
             if map.game_over_flg:
@@ -61,6 +61,12 @@ class Process():
                     break
                 else:
                     continue
+
+            # アイテム一覧
+            if map.show_item_flg:
+                player.show_item_list()
+                map.show_item_flg = False
+                continue
 
             # ゴール判定
             if map.goal_flg is True:
@@ -82,4 +88,3 @@ class Process():
                 Event.clear()
                 print(Text.GAME_OVER)
                 break
-

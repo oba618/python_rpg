@@ -63,7 +63,7 @@ class Monster():
             power = 30 + randint(10, 20)
             level = 3
             return (self.GOLEM, hp, power, level)
-        
+
         # ドラゴン作成
         else:
             hp = 200 + randint(50, 100)

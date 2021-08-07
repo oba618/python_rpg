@@ -5,22 +5,23 @@ from text import Text
 
 
 class Event():
+
+    YES_LIST = [
+        'y', 'ye', 'yes', 'Y', 'YE', 'YES',
+        'ｙ', 'いぇ', 'いぇｓ', 'Ｙ', 'ＹＥ', 'ＹＥＳ',
+    ]
+
     @staticmethod
     def clear():
         """コンソール画面をクリアする
         """
-        clearConsole = lambda: os.system('cls' if os.name in ('nt', 'dos') else 'clear')
-        clearConsole()
+        os.system('cls' if os.name in ('nt', 'dos') else 'clear')
 
-    @staticmethod
-    def is_yes(answer: str) -> bool:
+    @classmethod
+    def is_yes(cls, answer: str) -> bool:
         """"応答がYesであるか否か
         """
-        yes_list = [
-            'y', 'ye', 'yes', 'Y', 'YE', 'YES',
-            'ｙ', 'いぇ', 'いぇｓ', 'Ｙ', 'ＹＥ', 'ＹＥＳ',
-        ]
-        return True if answer in yes_list else False 
+        return True if answer in cls.YES_LIST else False
 
     @staticmethod
     def is_encount(counter):
@@ -28,13 +29,9 @@ class Event():
         """
         return True if int(random() * 10) % 5 == 0 or counter % 10 == 0 else False
 
-    @staticmethod
-    def confirmation() -> bool:
+    @classmethod
+    def confirmation(cls) -> bool:
         """確認
         """
         answer = input(Text.MES_CONFIRMATION)
-        yes_list = [
-            'y', 'ye', 'yes', 'Y', 'YE', 'YES',
-            'ｙ', 'いぇ', 'いぇｓ', 'Ｙ', 'ＹＥ', 'ＹＥＳ',
-        ]
-        return True if answer in yes_list else False 
+        return True if answer in cls.YES_LIST else False
