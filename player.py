@@ -1,3 +1,4 @@
+from event import Event
 from text import Text
 from map import MapItem
 
@@ -11,6 +12,11 @@ class Player:
     PLAYER_INITIAL_EXP = 0
     PLAYER_INITIAL_LEVEL = 1
     PLAYER_INITIAL_ITEM_LIST = []
+
+    ADD_MAX_HP = 20
+    ADD_POWER = 5
+    ADD_DEFENCE = 1
+    ADD_LEVEL = 1
 
     @property
     def name(self):
@@ -92,11 +98,11 @@ class Player:
     def item_list(self, value):
         self._item_list = value
 
-    def __init__(self, name):
+    def __init__(self, name: str):
         self._name = name
         self._max_hp = self.PLAYER_INITIAL_HP
         self._hp = self.PLAYER_INITIAL_HP
-        self.max_mp = self.PLAYER_INITIAL_MP
+        self._max_mp = self.PLAYER_INITIAL_MP
         self._mp = self.PLAYER_INITIAL_MP
         self._power = self.PLAYER_INITIAL_POWER
         self._defense = self.PLAYER_INITIAL_DEFENSE
@@ -105,25 +111,35 @@ class Player:
         self._item_list = self.PLAYER_INITIAL_ITEM_LIST
 
     def level_up(self):
-        self.max_hp += 20
-        self.power += 5
-        self.defense += 1
-        self.level += 1
+        """レベルアップ
+        """
+        self.max_hp += self.ADD_MAX_HP
+        self.power += self.ADD_POWER
+        self.defense += self.ADD_DEFENCE
+        self.level += self.ADD_LEVEL
 
-    def get_item(self, field):
+    def get_item(self, field: str):
+        """アイテム一覧にフィールドのアイテム(MapItemインスタンス)を詰める
+
+        Args:
+            field (str): フィールドのアイテム
+        """
         # 剣の場合
         if field == MapItem.WEAPON.value:
             self.power += 30
-            input(Text.MES_GET_WEAPON)
+            print(Text.MES_GET_WEAPON)
+            Event.input()
 
         # 盾の場合
         if field == MapItem.SIELD.value:
             self.defense += 10
-            input(Text.MES_GET_SIELD)
+            print(Text.MES_GET_SIELD)
+            Event.input()
 
         # 薬の場合
         if field == MapItem.HERBS.value:
-            input(Text.MES_GET_HERBS)
+            print(Text.MES_GET_HERBS)
+            Event.input()
 
         # アイテム一覧に詰める
         self.item_list.append(MapItem(field))
