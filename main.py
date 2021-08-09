@@ -1,22 +1,27 @@
 from buttle import Buttle
 from event import Event
+from map import Map, MapItem
 from monster import Monster
 from player import Player
 from process import Process
 from text import Text
-from map import Map, MapItem
 
 
 def main():
+    # タイトルの表示
     Event.clear()
     Process.show_title()
     Event.input()
 
+    # プレイヤー名の入力
     player_name = ''
     while not player_name:
+        Event.clear()
+        player_name = Process.input_player_name()
         player_name = \
-            Process.confirm_input_player_name(Process.input_player_name())
+            Process.confirm_input_player_name(player_name)
 
+    # プレイヤーとマップの作成
     player = Player(player_name)
     map = Map()
 
@@ -48,6 +53,8 @@ def main():
 
         # STATUS木ーを押した場合
         elif player_key == Process.STATUS:
+            Event.clear()
+            print(Text.MES_HOW_TO_PLAY)
             Process.show_player_status(player)
             continue
 
@@ -168,8 +175,6 @@ def show_item_list(player: Player):
 
         else:
             break
-
-
 
 
 if __name__ == '__main__':

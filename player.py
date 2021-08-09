@@ -2,14 +2,6 @@ from text import Text
 from map import MapItem
 
 
-KEY_LIST = {
-    'close': ['e', 'E', 'え', 'E'],
-    'up': ['w', 'W', 'ｗ', 'Ｗ'],
-    'down': ['s', 'S', 'ｓ', 'Ｓ'],
-    'use': ['x', 'X', 'ｘ', 'Ｘ'],
-}
-
-
 class Player:
 
     PLAYER_INITIAL_HP = 200
