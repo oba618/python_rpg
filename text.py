@@ -2,19 +2,18 @@ class Text:
     PLAYER_NAME_MAX_LENGTH = 10
 
     # title
-    TITLE = [
-        '＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃',
-        '＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃',
-        '',
-        '   RPG created by Python',
-        '',
-        '＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃',
-        '＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃',
-        '＃＃＃　ゲームスタート　＃＃＃',
-    ]
+    TITLE = \
+        '＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃\n' \
+        + '＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃\n' \
+        + '\n' \
+        + '   RPG created by Python\n' \
+        + '\n' \
+        + '＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃\n' \
+        + '＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃\n' \
+        + '＃＃＃　ゲームスタート　＃＃＃\n'
 
     # text
-    INPUT_PLAYER_NAME = '名前を入力してください: '
+    MES_INPUT_PLAYER_NAME = '名前を入力してください: '
     MES_PLAYER_NAME_IS_TOO_LONG = '名前が長すぎます。（10文字まで）'
     QUESTION_ANSWER = '"{}" これで良いですか？\n"yes" または "no" で応答してください [y/N]:'
     WELCOME = 'ようこそ '
@@ -29,7 +28,7 @@ class Text:
         '＝＝＝＝＝＝＝＝＝　操作方法　＝＝＝＝＝＝＝＝＝\n' \
         + '[終了　　　：q ][上　　　　：w ][アイテム　：e ]\n' \
         + '[左　　　　：a ][下　　　　：s ][右　　　　：d ]\n' \
-        + '[ステータス：z ][ヘルプ　　：x ]\n' \
+        + '[ステータス：z ][決定　　　：x ][ヘルプ　　：c ]\n' \
         + '＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝\n'
     HOW_TO_USE_ITEM = \
         '＝＝＝＝＝＝＝＝＝　操作方法　＝＝＝＝＝＝＝＝＝\n' \
@@ -37,14 +36,16 @@ class Text:
         + '[　　　　　　　][下　　　　：s ][　　　　　　　]\n' \
         + '[　　　　　　　][つかう　　：x ]\n' \
         + '＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝\n'
-    ITEM_LIST = '＃＃＃＃＃＃＃＃　アイテム一覧　＃＃＃＃＃＃＃＃\n'
-    NOTING_ITEM = 'アイテムがありません。'
+    ITEM_LIST_PREFIX = '＃＃＃＃＃＃＃＃　アイテム一覧　＃＃＃＃＃＃＃＃\n'
+    ITEM_LIST_NOTING = 'アイテムがありません。'
     MES_USE_HERB = 'HPが少し回復した！'
     MES_USE_EQUIPMENT = '装備品は持っているだけで効果があります'
-    ITEM_LIST_END = '\n＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃\n'
+    ITEM_LIST_SUFFIX = '\n＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃\n'
     USE_ITEM_CONFIRM = \
         '"{}"を使用します。よろしいですか？\n' \
         + '"yes" または "no" で応答してください [y/N]'
+    ICON_SELECTED = '[＊]'
+    ICON_NOT_SELECTED = '[　]'
     MES_CAN_NOT_USE_KEY = '!!! 無効なキーです !!!'
     MES_CAN_NOT_MOVE = '!!! 移動できません !!!'
     MES_GET_SIELD = '勇者の盾を手に入れた！'
@@ -61,6 +62,12 @@ class Text:
     PLAYER_STATUS = \
         '{}\n' \
         + 'HP[{}/{}] MP[{}/{}]\n'
+    PLAYER_STATUS_DETAIL = \
+        'LEVEL： {}\n' \
+        + '集めた経験値： {}exp\n' \
+        + '次の経験値まで後：　{}exp\n' \
+        + '攻撃力：　{}\n' \
+        + '防御力：　{}\n'
     MONSTER_STATUS = \
         '{}\n' \
         + 'HP[{}]\n'

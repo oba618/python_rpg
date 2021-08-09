@@ -1,5 +1,4 @@
 import runpy
-import main
 
 
 class TestMain:

@@ -2,18 +2,10 @@
 from enum import Enum
 
 from event import Event
+from process import Process
 from text import Text
 
 
-KEY_LIST = {
-    'up': ['w', 'W', 'ｗ', 'Ｗ'],
-    'down': ['s', 'S', 'ｓ', 'Ｓ'],
-    'left': ['a', 'A', 'あ', 'Ａ'],
-    'right': ['d', 'D', 'ｄ', 'Ｄ'],
-    'esc': ['q', 'Q', 'ｑ', 'Ｑ'],
-    'item': ['e', 'E', 'え', 'E'],
-    'help': ['x', 'X', 'ｘ', 'Ｘ'],
-}
 MAP = [
     ['B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'],
     ['B', 'P', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'H', 'E', 'E', 'E', 'H', 'B'],
@@ -110,91 +102,65 @@ class Map:
                 map = map + MapItem(string).map_item
             print(map)
 
-    def move(self):
+    def move(self, input_key):
         """マップを移動
         """
-        while True:
-            # 移動先フィールドを初期化
-            self.field = ''
-            input_key = input()
+        next_height = self.now_h
+        next_width = self.now_w
 
-            # 終了
-            if input_key in KEY_LIST['esc']:
-                self.game_over_flg = True
-                break
+        # 下へ
+        if input_key in Process.DOWN:
+            next_height += 1
 
-            # アイテム一覧
-            elif input_key in KEY_LIST['item']:
-                self.show_item_flg = True
-                break
+        # 左へ
+        elif input_key in Process.LEFT:
+            next_width -= 1
 
-            # 下へ
-            if input_key in KEY_LIST['down']:
-                next_height = self.now_h + 1
-                self.change_field(next_height, self.now_w)
+        # 右へ
+        elif input_key in Process.RIGHT:
+            next_width += 1
 
-            # 左へ
-            elif input_key in KEY_LIST['left']:
-                next_width = self.now_w - 1
-                self.change_field(self.now_h, next_width)
+        # 上へ
+        elif input_key in Process.UP:
+            next_height -= 1
 
-            # 右へ
-            elif input_key in KEY_LIST['right']:
-                next_width = self.now_w + 1
-                self.change_field(self.now_h, next_width)
-
-            # 上へ
-            elif input_key in KEY_LIST['up']:
-                next_height = self.now_h - 1
-                self.change_field(next_height, self.now_w)
-
-            # 不正な入力の場合
-            else:
-                print(Text.MES_CAN_NOT_USE_KEY)
-                continue
-
-            # 移動先フィールドが壁の場合
-            if self.field == MapItem.BLOCK.value:
-                continue
-
-            self.counter += 1
-            break
+        self.change_field(next_height, next_width)
+        self.counter += 1
 
     def change_field(self, height, width):
         """フィールドを更新
         """
         # ゴールの場合
         if MAP[height][width] == MapItem.GOAL.value:
-            self.goal_flg = True
+            self.field = MapItem.GOAL.value
 
         # 空地の場合
         elif MAP[height][width] == MapItem.EMPTY.value:
             self._change_field(height, width)
+            self.field = MapItem.EMPTY.value
 
         # 剣の場合
         elif MAP[height][width] == MapItem.WEAPON.value:
             self._change_field(height, width)
-
             self.field = MapItem.WEAPON.value
 
         # 盾の場合
         elif MAP[height][width] == MapItem.SIELD.value:
             self._change_field(height, width)
-
             self.field = MapItem.SIELD.value
 
         # 薬の場合
         elif MAP[height][width] == MapItem.HERBS.value:
             self._change_field(height, width)
-
             self.field = MapItem.HERBS.value
 
-        else:
+        # 壁の場合
+        elif MAP[height][width] == MapItem.BLOCK.value:
             self.field = MapItem.BLOCK.value
-            input(Text.MES_CAN_NOT_MOVE)
 
     def _change_field(self, height, width):
-        # 現在位置を空地へ
+        """現在位置を空地へ
+        """
         MAP[self.now_h][self.now_w] = MapItem.EMPTY.value
 
         # 移動先をPへ

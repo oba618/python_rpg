@@ -1,4 +1,5 @@
 import os
+import sys
 from random import random
 
 from text import Text
@@ -37,3 +38,9 @@ class Event:
         """
         answer = input(Text.MES_CONFIRMATION)
         return True if answer in cls.YES_LIST else False
+
+    @staticmethod
+    def input():
+        """標準入力
+        """
+        return sys.stdin.readline().rstrip('\n')

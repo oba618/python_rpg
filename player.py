@@ -1,4 +1,3 @@
-from event import Event
 from text import Text
 from map import MapItem
 
@@ -136,66 +135,3 @@ class Player:
 
         # アイテム一覧に詰める
         self.item_list.append(MapItem(field))
-
-    def show_item_list(self):
-        """アイテム一覧を表示
-        """
-        select_index = 0
-
-        while True:
-            Event.clear()
-            print(Text.HOW_TO_USE_ITEM)
-            print(Text.ITEM_LIST)
-
-            # アイテムがある場合
-            if self.item_list:
-                for index, item in enumerate(self.item_list):
-
-                    # 選択中のアイテムの場合
-                    if index == select_index:
-                        print('[＊]' + item.title)
-                    else:
-                        print('[　]' + item.title)
-
-            # アイテムがない場合
-            else:
-                print(Text.NOTING_ITEM)
-            print(Text.ITEM_LIST_END)
-
-            # キー入力待ち
-            input_key = input()
-
-            # CLOSEの場合
-            if input_key in KEY_LIST['close']:
-                break
-
-            # UPの場合
-            elif input_key in KEY_LIST['up']:
-                select_index = select_index - 1 \
-                    if select_index > 0 else 0
-
-            # DOWNの場合
-            elif input_key in KEY_LIST['down']:
-                select_index = select_index + 1 \
-                    if select_index < len(self.item_list) - 1 else select_index
-
-            # USEの場合
-            elif input_key in KEY_LIST['use']:
-                item_object = self.item_list[select_index]
-                answer = input(Text.USE_ITEM_CONFIRM.format(
-                    item_object.description))
-
-                # Yesの場合
-                if Event.is_yes(answer):
-                    if item_object == MapItem.HERBS:
-                        self.hp += 100
-                        if self.hp > self.max_hp:
-                            self.hp = self.max_hp
-                        self.item_list.pop(select_index)
-                        select_index = 0
-                        input(Text.MES_USE_HERB)
-                    else:
-                        input(Text.MES_USE_EQUIPMENT)
-
-            else:
-                break
