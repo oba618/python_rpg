@@ -13,15 +13,15 @@ class TestPlayer:
         player = Player(player_name)
 
         assert player.name == player_name
-        assert player.max_hp == player.PLAYER_INITIAL_HP
-        assert player.hp == player.PLAYER_INITIAL_HP
-        assert player.max_mp == player.PLAYER_INITIAL_MP
-        assert player.mp == player.PLAYER_INITIAL_MP
-        assert player.power == player.PLAYER_INITIAL_POWER
-        assert player.defense == player.PLAYER_INITIAL_DEFENSE
-        assert player.exp == player.PLAYER_INITIAL_EXP
-        assert player.level == player.PLAYER_INITIAL_LEVEL
-        assert player.item_list == player.PLAYER_INITIAL_ITEM_LIST
+        assert player.max_hp == player.DEFAULT_INITIAL_HP
+        assert player.hp == player.DEFAULT_INITIAL_HP
+        assert player.max_mp == player.DEFAULT_INITIAL_MP
+        assert player.mp == player.DEFAULT_INITIAL_MP
+        assert player.power == player.DEFAULT_INITIAL_POWER
+        assert player.defense == player.DEFAULT_INITIAL_DEFENSE
+        assert player.exp == player.DEFAULT_INITIAL_EXP
+        assert player.level == player.DEFAULT_INITIAL_LEVEL
+        assert player.item_list == player.DEFAULT_INITIAL_ITEM_LIST
 
     def test_create_instance_setter(self):
         """正常
@@ -76,13 +76,13 @@ class TestPlayer:
         player.level_up()
 
         assert player.max_hp \
-            == player.PLAYER_INITIAL_HP + player.ADD_MAX_HP
+            == player.DEFAULT_INITIAL_HP + player.ADD_MAX_HP
         assert player.power \
-            == player.PLAYER_INITIAL_POWER + player.ADD_POWER
+            == player.DEFAULT_INITIAL_POWER + player.ADD_POWER
         assert player.defense \
-            == player.PLAYER_INITIAL_DEFENSE + player.ADD_DEFENCE
+            == player.DEFAULT_INITIAL_DEFENSE + player.ADD_DEFENCE
         assert player.level \
-            == player.PLAYER_INITIAL_LEVEL + player.ADD_LEVEL
+            == player.DEFAULT_INITIAL_LEVEL + player.ADD_LEVEL
 
     def test_level_up_100(self):
         """正常

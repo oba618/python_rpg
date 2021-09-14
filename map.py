@@ -6,24 +6,26 @@ from process import Process
 from text import Text
 
 
-MAP = [
-    ['B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'],
-    ['B', 'P', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'H', 'E', 'E', 'E', 'H', 'B'],
-    ['B', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'B'],
-    ['B', 'H', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'E', 'B'],
-    ['B', 'H', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'H', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'E', 'B'],
-    ['B', 'H', 'E', 'E', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'E', 'B'],
-    ['B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'E', 'B'],
-    ['B', 'E', 'E', 'E', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'E', 'B'],
-    ['B', 'E', 'S', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'E', 'B'],
-    ['B', 'E', 'E', 'E', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'E', 'B'],
-    ['B', 'E', 'E', 'E', 'E', 'H', 'B', 'W', 'E', 'E', 'E', 'E', 'B', 'E', 'H', 'E', 'E', 'E', 'G', 'B'],
-    ['B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'],
-]
 HP_FORMAT = ' HP:[{}/{}] '
 
 
 class Map:
+
+    map_lists = [
+        ['B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'],
+        ['B', 'P', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'H', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'H', 'B'],
+        ['B', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'B'],
+        ['B', 'H', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'B'],
+        ['B', 'H', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'H', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'B'],
+        ['B', 'H', 'E', 'E', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'B'],
+        ['B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'B'],
+        ['B', 'E', 'E', 'E', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'B'],
+        ['B', 'E', 'S', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'B'],
+        ['B', 'E', 'E', 'E', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'B'],
+        ['B', 'E', 'E', 'E', 'E', 'H', 'B', 'W', 'E', 'E', 'E', 'E', 'B', 'E', 'H', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'G', 'B'],
+        ['B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'],
+    ]
+
     @property
     def counter(self):
         return self._counter
@@ -96,7 +98,7 @@ class Map:
         print(Text.MES_HOW_TO_PLAY)
 
         # 二次元配列の文字列を、コマンドライン表示用に変換
-        for array in MAP:
+        for array in self.map_lists:
             map = ''
             for string in array:
                 map = map + MapItem(string).map_item
@@ -131,50 +133,50 @@ class Map:
         """フィールドを更新
         """
         # ゴールの場合
-        if MAP[height][width] == MapItem.GOAL.value:
+        if self.map_lists[height][width] == MapItem.GOAL.value:
             self.field = MapItem.GOAL.value
 
         # 空地の場合
-        elif MAP[height][width] == MapItem.EMPTY.value:
+        elif self.map_lists[height][width] == MapItem.EMPTY.value:
             self._change_field(height, width)
             self.field = MapItem.EMPTY.value
 
         # 剣の場合
-        elif MAP[height][width] == MapItem.WEAPON.value:
+        elif self.map_lists[height][width] == MapItem.WEAPON.value:
             self._change_field(height, width)
             self.field = MapItem.WEAPON.value
 
         # 盾の場合
-        elif MAP[height][width] == MapItem.SIELD.value:
+        elif self.map_lists[height][width] == MapItem.SIELD.value:
             self._change_field(height, width)
             self.field = MapItem.SIELD.value
 
         # 薬の場合
-        elif MAP[height][width] == MapItem.HERBS.value:
+        elif self.map_lists[height][width] == MapItem.HERBS.value:
             self._change_field(height, width)
             self.field = MapItem.HERBS.value
 
         # 壁の場合
-        elif MAP[height][width] == MapItem.BLOCK.value:
+        elif self.map_lists[height][width] == MapItem.BLOCK.value:
             self.field = MapItem.BLOCK.value
 
     def _change_field(self, height, width):
         """現在位置を空地へ
         """
-        MAP[self.now_h][self.now_w] = MapItem.EMPTY.value
+        self.map_lists[self.now_h][self.now_w] = MapItem.EMPTY.value
 
         # 移動先をPへ
         if height > self.now_h:
-            MAP[self.now_h + 1][self.now_w] = MapItem.PLAYER.value
+            self.map_lists[self.now_h + 1][self.now_w] = MapItem.PLAYER.value
             self.now_h += 1
         elif height < self.now_h:
-            MAP[self.now_h - 1][self.now_w] = MapItem.PLAYER.value
+            self.map_lists[self.now_h - 1][self.now_w] = MapItem.PLAYER.value
             self.now_h -= 1
         elif width > self.now_w:
-            MAP[self.now_h][self.now_w + 1] = MapItem.PLAYER.value
+            self.map_lists[self.now_h][self.now_w + 1] = MapItem.PLAYER.value
             self.now_w += 1
         elif width < self.now_w:
-            MAP[self.now_h][self.now_w - 1] = MapItem.PLAYER.value
+            self.map_lists[self.now_h][self.now_w - 1] = MapItem.PLAYER.value
             self.now_w -= 1
 
 

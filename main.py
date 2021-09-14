@@ -21,6 +21,11 @@ def main():
         player_name = \
             Process.confirm_input_player_name(player_name)
 
+    # テキストを表示
+    Event.clear()
+    print(Text.MES_GAME_MISSION.format(player_name))
+    Event.input()
+
     # プレイヤーとマップの作成
     player = Player(player_name)
     map = Map()

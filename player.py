@@ -5,13 +5,13 @@ from map import MapItem
 
 class Player:
 
-    PLAYER_INITIAL_HP = 200
-    PLAYER_INITIAL_MP = 5
-    PLAYER_INITIAL_POWER = 10
-    PLAYER_INITIAL_DEFENSE = 0
-    PLAYER_INITIAL_EXP = 0
-    PLAYER_INITIAL_LEVEL = 1
-    PLAYER_INITIAL_ITEM_LIST = []
+    DEFAULT_INITIAL_HP = 200
+    DEFAULT_INITIAL_MP = 5
+    DEFAULT_INITIAL_POWER = 10
+    DEFAULT_INITIAL_DEFENSE = 0
+    DEFAULT_INITIAL_EXP = 0
+    DEFAULT_INITIAL_LEVEL = 1
+    DEFAULT_INITIAL_ITEM_LIST = []
 
     ADD_MAX_HP = 20
     ADD_POWER = 5
@@ -100,15 +100,15 @@ class Player:
 
     def __init__(self, name: str):
         self._name = name
-        self._max_hp = self.PLAYER_INITIAL_HP
-        self._hp = self.PLAYER_INITIAL_HP
-        self._max_mp = self.PLAYER_INITIAL_MP
-        self._mp = self.PLAYER_INITIAL_MP
-        self._power = self.PLAYER_INITIAL_POWER
-        self._defense = self.PLAYER_INITIAL_DEFENSE
-        self._exp = self.PLAYER_INITIAL_EXP
-        self._level = self.PLAYER_INITIAL_LEVEL
-        self._item_list = self.PLAYER_INITIAL_ITEM_LIST
+        self._max_hp = self.DEFAULT_INITIAL_HP
+        self._hp = self.DEFAULT_INITIAL_HP
+        self._max_mp = self.DEFAULT_INITIAL_MP
+        self._mp = self.DEFAULT_INITIAL_MP
+        self._power = self.DEFAULT_INITIAL_POWER
+        self._defense = self.DEFAULT_INITIAL_DEFENSE
+        self._exp = self.DEFAULT_INITIAL_EXP
+        self._level = self.DEFAULT_INITIAL_LEVEL
+        self._item_list = self.DEFAULT_INITIAL_ITEM_LIST
 
     def level_up(self):
         """レベルアップ

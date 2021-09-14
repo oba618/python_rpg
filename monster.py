@@ -45,29 +45,29 @@ class Monster:
 
     def create_monster(self, counter):
         # スライム作成
-        if 0 <= counter < 20:
+        if 0 <= counter < 30:
             hp = 20 + randint(1, 3)
             power = 10 + randint(1, 3)
             level = 1
             return (self.SLIME, hp, power, level)
 
         # ゴブリン作成
-        elif 20 <= counter < 40:
+        elif 30 <= counter < 60:
             hp = 50 + randint(10, 15)
             power = 20 + randint(5, 10)
             level = 2
             return (self.GOBLINS, hp, power, level)
 
         # ゴーレム作成
-        elif 40 <= counter < 60:
+        elif 60 <= counter < 90:
             hp = 100 + randint(20, 30)
             power = 30 + randint(10, 20)
-            level = 3
+            level = 5
             return (self.GOLEM, hp, power, level)
 
         # ドラゴン作成
         else:
             hp = 200 + randint(50, 100)
             power = 50 + randint(30, 40)
-            level = 4
+            level = 10
             return (self.DRAGON, hp, power, level)

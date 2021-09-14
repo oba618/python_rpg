@@ -2,23 +2,32 @@ class Text:
     PLAYER_NAME_MAX_LENGTH = 10
 
     # title
+    STRING_DECORATION = '＝' * 24 + '\n'
     TITLE = \
-        '＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃\n' \
-        + '＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃\n' \
-        + '\n' \
-        + '   RPG created by Python\n' \
-        + '\n' \
-        + '＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃\n' \
-        + '＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃\n' \
-        + '＃＃＃　ゲームスタート　＃＃＃\n'
+        STRING_DECORATION \
+        + '\n' * 5 \
+        + '　　　　　RPG created by Python\n' \
+        + '\n' * 5 \
+        + STRING_DECORATION \
+        + 'Enterを押してゲームスタート\n'
 
     # text
-    MES_INPUT_PLAYER_NAME = '名前を入力してください: '
+    MES_INPUT_PLAYER_NAME = \
+        STRING_DECORATION + '\n\nプレイヤー名を入力してください: '
     MES_PLAYER_NAME_IS_TOO_LONG = '名前が長すぎます。（10文字まで）'
     QUESTION_ANSWER = '"{}" これで良いですか？\n"yes" または "no" で応答してください [y/N]:'
     WELCOME = 'ようこそ '
     INPUT_YES_OR_NO = ''
     ENTER = '\n'
+    MES_GAME_MISSION = STRING_DECORATION \
+        + '\n\nようこそ{}さん！\n' \
+        + 'ゲームクリア条件は、ゴール(G)に到達することです。\n' \
+        + '\n道中恐ろしいモンスターと遭遇するかもしれません。\n' \
+        + '戦うか逃げるかは、あなた次第です！\n' \
+        + '\n・・・恐ろしいドラゴンが接近中と言う\n' \
+        + '連絡がありましたので、\n' \
+        + '早めにゴールを目指す事をお薦めします！\n' \
+        + '\nそれでは、いってらっしゃい！！'
 
     # map
     MES_CONFIRMATION = \
@@ -85,5 +94,5 @@ class Text:
     MES_ESCAPE = 'にげた！'
     MES_CAN_NOT_ESCAPE = 'にげることに、しっぱいした！'
 
-    GAME_OVER = '\n ... ゲーム　オーバー ... \n\n'
-    GAME_CLEAR = '\n=== ゲーム　クリア === \n\n'
+    GAME_OVER = STRING_DECORATION + '\n\n ... ゲーム　オーバー ... \n\n'
+    GAME_CLEAR = STRING_DECORATION + '\n\n=== ゲーム　クリア === \n\n'

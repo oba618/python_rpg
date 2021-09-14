@@ -29,7 +29,7 @@ class Event:
         """モンスターと戦闘するか否か
         """
         return True \
-            if int(random() * 10) % 5 == 0 or counter % 10 == 0 \
+            if int(random() * 10) % 9 == 0 or counter % 20 == 0 \
             else False
 
     @classmethod
