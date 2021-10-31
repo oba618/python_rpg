@@ -8,38 +8,32 @@ from text import Text
 
 
 def main():
-    # タイトルの表示
-    Event.clear()
-    Process.show_title()
-    Event.input()
 
-    # プレイヤー名の入力
-    player_name = ''
-    while not player_name:
-        Event.clear()
-        player_name = Process.input_player_name()
-        player_name = \
-            Process.confirm_input_player_name(player_name)
+    # ゲームプロセス初期化
+    process = Process()
+
+    # タイトルの表示
+    process.show_title()
+
+    # プレイヤー作成
+    player = Player(process.input_player_name())
+
+    # マップの作成
+    map = Map(process.select_game_level())
 
     # テキストを表示
-    Event.clear()
-    print(Text.MES_GAME_MISSION.format(player_name))
-    Event.input()
-
-    # プレイヤーとマップの作成
-    player = Player(player_name)
-    map = Map()
+    process.show_epilogue(player.name)
 
     # メインループ
     while True:
         map.field = ''
         map.show()
-        player_key = Process.input_player_key()
+        player_key = process.input_player_key()
         if not player_key:
             continue
 
         # ESCキーを押した場合
-        if player_key == Process.ESC:
+        if player_key == process.ESC:
             if Event.confirmation():
                 Event.clear()
                 print(Text.GAME_OVER)
@@ -48,28 +42,28 @@ def main():
                 continue
 
         # ITEMキーを押した場合
-        elif player_key == Process.ITEM:
+        elif player_key == process.ITEM:
             show_item_list(player)
             continue
 
         # HELPキーを押した場合
-        elif player_key == Process.HELP:
+        elif player_key == process.HELP:
             continue
 
         # STATUS木ーを押した場合
-        elif player_key == Process.STATUS:
+        elif player_key == process.STATUS:
             Event.clear()
             print(Text.MES_HOW_TO_PLAY)
-            Process.show_player_status(player)
+            process.show_player_status(player)
             continue
 
         # DECISIONキーを押した場合
-        elif player_key == Process.DECISION:
+        elif player_key == process.DECISION:
             continue
 
         # 移動キーを押した場合
-        elif player_key == Process.UP or player_key == Process.DOWN or\
-                player_key == Process.LEFT or player_key == Process.RIGHT:
+        elif player_key == process.UP or player_key == process.DOWN or\
+                player_key == process.LEFT or player_key == process.RIGHT:
             map.move(player_key)
 
         # その他のキーを押した場合

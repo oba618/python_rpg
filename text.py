@@ -16,6 +16,10 @@ class Text:
         STRING_DECORATION + '\n\nプレイヤー名を入力してください: '
     MES_PLAYER_NAME_IS_TOO_LONG = '名前が長すぎます。（10文字まで）'
     QUESTION_ANSWER = '"{}" これで良いですか？\n"yes" または "no" で応答してください [y/N]:'
+    MES_SELECT_GAME_LEVEL = 'プレイするゲームレベルを入力してください。\n' \
+        + '1: EASY \n' \
+        + '2: NORMAL \n' \
+        + '3: HARD \n'
     WELCOME = 'ようこそ '
     INPUT_YES_OR_NO = ''
     ENTER = '\n'
