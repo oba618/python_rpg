@@ -1,22 +1,19 @@
-
-from enum import Enum
-
 from event import Event
-from process import Process
+from item import Item
 from text import Text
 
 
-HP_FORMAT = ' HP:[{}/{}] '
-
-
 class Map:
+    """フィールドマップのクラス
+    """
 
+    # マップ一覧
     MAPS = [
 
         # level_easy
         [
             ['B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'],
-            ['B', 'P', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'H', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'H', 'B'],
+            ['B', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'H', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'H', 'B'],
             ['B', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'B'],
             ['B', 'H', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'B'],
             ['B', 'H', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'H', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'B'],
@@ -32,7 +29,7 @@ class Map:
         # level_normal
         [
             ['B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'],
-            ['B', 'P', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'H', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'H', 'B'],
+            ['B', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'H', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'H', 'B'],
             ['B', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'B'],
             ['B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'B'],
             ['B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'H', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'B'],
@@ -48,7 +45,7 @@ class Map:
         # level_hard
         [
             ['B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'],
-            ['B', 'P', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'H', 'B', 'E', 'E', 'E', 'E', 'E', 'E', 'H', 'B'],
+            ['B', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'H', 'B', 'E', 'E', 'E', 'E', 'E', 'E', 'H', 'B'],
             ['B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'B'],
             ['B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'B'],
             ['B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'H', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'B', 'E', 'E', 'E', 'E', 'B'],
@@ -126,7 +123,25 @@ class Map:
         self._game_over_flg = False
         self._show_item_flg = False
         self._field = ''
-        self._map_lists = self.MAPS[int(game_level) - 1]
+        self._map_lists = self.create_map(game_level)
+
+    def create_map(self, game_level: str) -> list:
+        """フィールドマップを作成する
+
+        Args:
+            game_level (str): ゲームレベル
+
+        Returns:
+            list: フィールドマップ
+        """
+        
+        # レベルに応じたマップを選択
+        field_map = self.MAPS[int(game_level) - 1]
+
+        # マップにプレイヤーを配置
+        field_map[self._now_h][self._now_w] = Item.PLAYER.value
+
+        return field_map
 
     def show(self):
         """マップを表示
@@ -138,100 +153,44 @@ class Map:
         for array in self._map_lists:
             map = ''
             for string in array:
-                map = map + MapItem(string).map_item
+                map = map + Item(string).map_item
             print(map)
 
-    def move(self, input_key):
+    def move(self, height: int, width: int) -> str:
         """マップを移動
         """
-        next_height = self.now_h
-        next_width = self.now_w
 
-        # 下へ
-        if input_key in Process.DOWN:
-            next_height += 1
+        # 次の移動先
+        next_field = self._map_lists[self.now_h + height][self._now_w + width]
 
-        # 左へ
-        elif input_key in Process.LEFT:
-            next_width -= 1
-
-        # 右へ
-        elif input_key in Process.RIGHT:
-            next_width += 1
-
-        # 上へ
-        elif input_key in Process.UP:
-            next_height -= 1
-
-        self.change_field(next_height, next_width)
-        self.counter += 1
-
-    def change_field(self, height, width):
-        """フィールドを更新
-        """
-        # ゴールの場合
-        if self._map_lists[height][width] == MapItem.GOAL.value:
-            self.field = MapItem.GOAL.value
-
-        # 空地の場合
-        elif self._map_lists[height][width] == MapItem.EMPTY.value:
+        # マップ更新
+        if not next_field == Item.BLOCK.value:
             self._change_field(height, width)
-            self.field = MapItem.EMPTY.value
-
-        # 剣の場合
-        elif self._map_lists[height][width] == MapItem.WEAPON.value:
-            self._change_field(height, width)
-            self.field = MapItem.WEAPON.value
-
-        # 盾の場合
-        elif self._map_lists[height][width] == MapItem.SIELD.value:
-            self._change_field(height, width)
-            self.field = MapItem.SIELD.value
-
-        # 薬の場合
-        elif self._map_lists[height][width] == MapItem.HERBS.value:
-            self._change_field(height, width)
-            self.field = MapItem.HERBS.value
 
         # 壁の場合
-        elif self._map_lists[height][width] == MapItem.BLOCK.value:
-            self.field = MapItem.BLOCK.value
+        if next_field == Item.BLOCK.value:
+            print(Text.MES_CAN_NOT_MOVE)
+            Event.input()
+            return
+
+        # 空地の場合
+        if next_field == Item.EMPTY.value:
+            return
+
+        # ゴールの場合
+        if next_field == Item.GOAL.value:
+            self.goal_flg = True
+
+        # 移動先が、アイテムの場合
+        if next_field in [Item.WEAPON.value, Item.SIELD.value, Item.HERBS.value]:
+            return next_field
 
     def _change_field(self, height, width):
         """現在位置を空地へ
         """
-        self._map_lists[self.now_h][self.now_w] = MapItem.EMPTY.value
+        self._map_lists[self.now_h][self.now_w] = Item.EMPTY.value
 
-        # 移動先をPへ
-        if height > self.now_h:
-            self._map_lists[self.now_h + 1][self.now_w] = MapItem.PLAYER.value
-            self.now_h += 1
-        elif height < self.now_h:
-            self._map_lists[self.now_h - 1][self.now_w] = MapItem.PLAYER.value
-            self.now_h -= 1
-        elif width > self.now_w:
-            self._map_lists[self.now_h][self.now_w + 1] = MapItem.PLAYER.value
-            self.now_w += 1
-        elif width < self.now_w:
-            self._map_lists[self.now_h][self.now_w - 1] = MapItem.PLAYER.value
-            self.now_w -= 1
+        self._now_h += height
+        self._now_w += width
 
-
-class MapItem(str, Enum):
-    """マップアイテム一覧
-    """
-    def __new__(cls, value, map_item, title, description):
-        obj = str.__new__(cls, value)
-        obj._value_ = value
-        obj.map_item = map_item
-        obj.title = title
-        obj.description = description
-        return obj
-
-    BLOCK = 'B', '＃', '壁', '侵入不可エリア（壁）'
-    EMPTY = 'E', '　', '空地', '何もないフィールド'
-    PLAYER = 'P', 'P ', 'プレイヤー', 'プレイヤーの現在位置'
-    GOAL = 'G', 'G ', 'ゴール', 'ゴールの位置'
-    WEAPON = 'W', '剣', '勇者の剣', '武器/勇者の剣/持っているだけで攻撃力アップ：'
-    SIELD = 'S', '盾', '勇者の盾', '防具/勇者の盾/持っているだけで防御力アップ'
-    HERBS = 'H', '薬', '薬草', '道具/薬草/使うとHPがすこし回復する'
+        self._map_lists[self.now_h][self.now_w] = Item.PLAYER.value

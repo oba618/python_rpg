@@ -40,8 +40,12 @@ class Monster:
         self._level = value
 
     def __init__(self, counter):
-        self._name, self._hp, self._power, self._level = \
-            self.create_monster(counter)
+        (
+            self._name,
+            self._hp,
+            self._power,
+            self._level,
+        ) = self.create_monster(counter)
 
     def create_monster(self, counter):
         # スライム作成

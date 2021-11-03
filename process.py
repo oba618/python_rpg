@@ -1,160 +1,300 @@
+from buttle import Buttle
 from event import Event
+from item import Item
+from key import Key
+from map import Map
+from monster import Monster
+from player import Player
 from text import Text
 
 
 class Process:
-    UP = 'w'
-    DOWN = 's'
-    LEFT = 'a'
-    RIGHT = 'd'
-    ESC = 'q'
-    ITEM = 'e'
-    STATUS = 'z'
-    DECISION = 'x'
-    HELP = 'c'
-    EMPTY = ''
-    KEY_LIST = {
-        UP: ['w', 'W', 'ｗ', 'Ｗ'],
-        DOWN: ['s', 'S', 'ｓ', 'Ｓ'],
-        LEFT: ['a', 'A', 'あ', 'Ａ'],
-        RIGHT: ['d', 'D', 'ｄ', 'Ｄ'],
-        ESC: ['q', 'Q', 'ｑ', 'Ｑ'],
-        ITEM: ['e', 'E', 'え', 'Ｅ'],
-        STATUS: ['z', 'Z', 'ｚ', 'Ｚ'],
-        DECISION: ['x', 'X', 'ｘ', 'Ｘ'],
-        HELP: ['c', 'C', 'ｃ', 'Ｃ'],
-        EMPTY: ['', ' ', '　'],
-    }
+    """ゲーム全体の流れを記述するクラス
+    """
 
-    @staticmethod
-    def show_title():
-        """タイトルを表示
+    def __init__(self):
+        self._player = None
+        self._map = None
+        self._escape_flg = False
+        self._buttle_flg = False
+        self._counter = 0
+        self.start()
+
+    def start(self):
+        """ゲームススタート：概要を一覧で記述
         """
-        Event.clear()
-        print(Text.TITLE)
-        Event.input()
 
-    @staticmethod
-    def show_epilogue(player_name):
-        """エピローグを表示
+        # タイトルの表示
+        Event.show_title()
 
-        Args:
-            player_name (str): プレイヤー名
-        """
-        Event.clear()
-        print(Text.MES_GAME_MISSION.format(player_name))
-        Event.input()
+        # プレイヤー作成
+        self._player = Player(Event.input_player_name())
 
-    @classmethod
-    def input_player_name(cls) -> str:
-        """プレイヤーの名前を入力
+        # マップの作成
+        self._map = Map(Event.select_game_level())
+
+        # プロローグ
+        Event.show_prologue(self._player.name)
+
+        # メインループ判定
+        while self.check_main_loop():
+
+            # マップ表示
+            self._map.show()
+
+            # キーに応じたアクション
+            self.action_player_key(Event.check_player_key())
+
+            # エンカウント判定
+            self.check_start_buttle()
+
+        # エピローグ（終わり）
+        self.show_epilogue()
+
+    def check_main_loop(self) -> bool:
+        """メインループを続けるか判定
 
         Returns:
-            str: プレイヤー名
+            bool: ループを続けるか否か
         """
-        player_name = ''
-        while not player_name:
+        if self._player.hp <= 0:
+            return False
 
+        if self._escape_flg:
+            return False
+
+        if self._map.field == Item.GOAL.value:
+            return False
+
+        if self._map.goal_flg is True:
+            return False
+
+        return True
+
+    def show_epilogue(self):
+        """エピローグを表示する
+        """
+        # 移動先が、ゴールの場合
+        if self._map.field == Item.GOAL.value:
             Event.clear()
-            print(Text.MES_INPUT_PLAYER_NAME)
-            player_name = Event.input()
+            print(Text.GAME_CLEAR)
+            return
 
-            # プレイヤー名が長い場合
-            if len(player_name) >= Text.PLAYER_NAME_MAX_LENGTH:
-                print(Text.MES_PLAYER_NAME_IS_TOO_LONG)
-                Event.input()
-                player_name = ''
-                continue
-
-            # プレイヤー名が未入力の場合
-            if len(player_name) == 0:
-                continue
-
-            # 決定の確認
-            player_name = cls.confirm_input(player_name)
-
-        return player_name
-
-    @classmethod
-    def select_game_level(cls) -> str:
-        """ゲームレベル選択
-
-        Returns:
-            str: ゲームレベル
-        """
-        game_level = ''
-        while not game_level:
+        # プレイヤーのHPが0以下になった場合
+        if self._player.hp < 0:
             Event.clear()
-            print(Text.MES_SELECT_GAME_LEVEL)
-            game_level = Event.input()
+            print(Text.GAME_OVER)
+            return
 
-            if game_level in ['1', '2', '3']:
-                game_level = cls.confirm_input(game_level)
+        # ESCキーでゲーム終了の場合
+        if self._escape_flg:
+            Event.clear()
+            print(Text.GAME_OVER)
+            return
 
-            else:
-                game_level = ''
+        if self._map.goal_flg is True:
+            Event.clear()
+            print(Text.GAME_CLEAR)
+            return
 
-        return game_level
-
-    @staticmethod
-    def confirm_input(item: str) -> str:
-        """応答がYesかNoを確認
-
-        Args:
-            item (str): 文字列
-
-        Returns:
-            str: 文字列
-        """
-        print(Text.QUESTION_ANSWER.format(item))
-        answer = Event.input()
-        if Event.is_yes(answer):
-            return item
-        else:
-            return ''
-
-    @classmethod
-    def input_player_key(cls) -> str:
-        """標準入力の受付
-
-        Returns:
-            str: バリデーションされた文字列
-        """
-        while True:
-            input_key = Event.input()
-            for key, value in cls.KEY_LIST.items():
-                if input_key in value:
-                    return key
-
-            # 不正な入力の場合
-            else:
-                print(Text.MES_CAN_NOT_USE_KEY)
-
-    @staticmethod
-    def show_player_status(player):
+    def show_player_status(self):
         """プレイヤーのステータス詳細を表示
 
         Args:
             player (Player): インスタンス
         """
+        Event.clear()
+        print(Text.MES_HOW_TO_PLAY)
+
         # 次レベルまでの必要経験値
-        required_exp = player.level**2 - player.exp
+        self.required_exp = self._player.level**2 - self._player.exp
 
         # 概要ステータスを表示
         print(Text.PLAYER_STATUS.format(
-            player.name,
-            player.hp,
-            player.max_hp,
-            player.mp,
-            player.max_mp,
+            self._player.name,
+            self._player.hp,
+            self._player.max_hp,
+            self._player.mp,
+            self._player.max_mp,
         ))
 
         # 詳細ステータスを表示
         print(Text.PLAYER_STATUS_DETAIL.format(
-            player.level,
-            player.exp,
-            required_exp,
-            player.power,
-            player.defense,
+            self._player.level,
+            self._player.exp,
+            self.required_exp,
+            self._player.power,
+            self._player.defense,
         ))
         Event.input()
+
+    def show_item_list(self):
+        """アイテム一覧を表示するループ
+        """
+        select_index = 0
+
+        while True:
+            Event.clear()
+            print(Text.MES_HOW_TO_PLAY)
+            print(Text.PLAYER_STATUS.format(
+                self._player.name, self._player.hp, self._player.max_hp, self._player.mp, self._player.max_mp
+            ))
+            print(Text.ITEM_LIST_PREFIX)
+
+            # アイテムがある場合
+            if self._player.item_list:
+                for index, item in enumerate(self._player.item_list):
+
+                    # 選択中のアイテムの場合
+                    if index == select_index:
+                        print(Text.ICON_SELECTED + item.title)
+                    else:
+                        print(Text.ICON_NOT_SELECTED + item.title)
+
+            # アイテムがない場合
+            else:
+                print(Text.ITEM_LIST_NOTING)
+                print(Text.ITEM_LIST_SUFFIX)
+                Event.input()
+                return
+            print(Text.ITEM_LIST_SUFFIX)
+
+            # キー入力待ち
+            input_key = Event.input_player_key()
+
+            # ITEMの場合、ESCの場合、
+            if input_key == Key.ITEM or \
+                    input_key == Key.ESC:
+                break
+
+            # UPの場合
+            elif input_key == Key.UP:
+                select_index = select_index - 1 \
+                    if select_index > 0 else len(self._player.item_list) - 1
+
+            # DOWNの場合
+            elif input_key == Key.DOWN:
+                select_index = select_index + 1 \
+                    if select_index < len(self._player.item_list) - 1 else 0
+
+            # DECISIONの場合、未入力の場合
+            elif input_key == Key.DECISION or \
+                    input_key == Key.EMPTY:
+                item_object = self._player.item_list[select_index]
+                print(Text.USE_ITEM_CONFIRM.format(item_object.description))
+                answer = Event.input()
+
+                # Yesの場合
+                if Event.is_yes(answer):
+                    if item_object == Item.HERBS:
+                        self._player.hp += 100
+                        if self._player.hp > self._player.max_hp:
+                            self._player.hp = self._player.max_hp
+                        self._player.item_list.pop(select_index)
+                        select_index = 0
+                        print(Text.MES_USE_HERB)
+                        Event.input()
+                    else:
+                        print(Text.MES_USE_EQUIPMENT)
+                        Event.input()
+
+            else:
+                break
+
+    @classmethod
+    def create_height_and_width(self, player_key):
+        height = 0
+        width = 0
+
+        # 下へ
+        if player_key == Key.DOWN:
+            height = 1
+
+        # 左へ
+        elif player_key == Key.LEFT:
+            width = -1
+
+        # 右へ
+        elif player_key == Key.RIGHT:
+            width = 1
+
+        # 上へ
+        elif player_key == Key.UP:
+            height = -1
+
+        return (height, width, )
+
+    def move_map(self, player_key: str):
+
+        height, width = self.create_height_and_width(player_key)
+
+        # マップを移動
+        item = self._map.move(height, width)
+
+        # アイテム取得
+        if item:
+            self._player.get_item(item)
+
+        # エンカウント用
+        self._counter += 1
+
+        self._buttle_flg = Event.is_encount(self._counter)
+
+    def start_buttle(self):
+        """バトル開始準備
+        """
+
+        # モンスター作成
+        monster = Monster(self._counter)
+
+        # バトルクラスへ
+        buttle = Buttle(self._player, monster)
+
+        # バトル
+        buttle.start_buttle()
+
+        # バトル終了
+        self._buttle_flg = False
+
+    def action_player_key(self, player_key):
+
+        # ESCキーを押した場合
+        if player_key == Key.ESC:
+            self._escape_flg = Event.confirmation()
+
+        # ITEMキーを押した場合
+        elif player_key == Key.ITEM:
+            pass
+
+            # アイテム画面へ
+            self.show_item_list()
+
+        # HELPキーを押した場合
+        elif player_key == Key.HELP:
+            pass
+
+        # STATUS木ーを押した場合
+        elif player_key == Key.STATUS:
+
+            # ステータス画面へ
+            self.show_player_status()
+
+        # DECISIONキーを押した場合
+        elif player_key == Key.DECISION:
+            pass
+
+        # 移動キーを押した場合
+        elif player_key in Key.MOVE_KEY_LIST:
+            self.move_map(player_key)
+
+        else:
+            return
+
+    def check_start_buttle(self):
+        """バトル開始判定
+        """
+
+        if self._buttle_flg:
+
+            # バトル画面へ
+            self.start_buttle()

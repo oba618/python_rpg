@@ -1,6 +1,6 @@
 from event import Event
+from item import Item
 from text import Text
-from map import MapItem
 
 
 class Player:
@@ -113,33 +113,33 @@ class Player:
     def level_up(self):
         """レベルアップ
         """
-        self.max_hp += self.ADD_MAX_HP
-        self.power += self.ADD_POWER
-        self.defense += self.ADD_DEFENCE
-        self.level += self.ADD_LEVEL
+        self._max_hp += self.ADD_MAX_HP
+        self._power += self.ADD_POWER
+        self._defense += self.ADD_DEFENCE
+        self._level += self.ADD_LEVEL
 
     def get_item(self, field: str):
-        """アイテム一覧にフィールドのアイテム(MapItemインスタンス)を詰める
+        """アイテム一覧にフィールドのアイテム(Itemインスタンス)を詰める
 
         Args:
             field (str): フィールドのアイテム
         """
         # 剣の場合
-        if field == MapItem.WEAPON.value:
-            self.power += 30
+        if field == Item.WEAPON.value:
+            self._power += 30
             print(Text.MES_GET_WEAPON)
             Event.input()
 
         # 盾の場合
-        if field == MapItem.SIELD.value:
-            self.defense += 10
+        if field == Item.SIELD.value:
+            self._defense += 10
             print(Text.MES_GET_SIELD)
             Event.input()
 
         # 薬の場合
-        if field == MapItem.HERBS.value:
+        if field == Item.HERBS.value:
             print(Text.MES_GET_HERBS)
             Event.input()
 
         # アイテム一覧に詰める
-        self.item_list.append(MapItem(field))
+        self._item_list.append(Item(field))
