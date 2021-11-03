@@ -134,7 +134,7 @@ class Map:
         Returns:
             list: フィールドマップ
         """
-        
+
         # レベルに応じたマップを選択
         field_map = self.MAPS[int(game_level) - 1]
 

@@ -22,18 +22,9 @@ class Player:
     def name(self):
         return self._name
 
-    @name.setter
-    def name(self, value):
-        self._name = value
-
     @property
     def max_hp(self):
         return self._max_hp
-
-    @max_hp.setter
-    def max_hp(self, value):
-        self._max_hp = value
-
     @property
     def hp(self):
         return self._hp
@@ -45,11 +36,6 @@ class Player:
     @property
     def max_mp(self):
         return self._max_mp
-
-    @max_mp.setter
-    def max_mp(self, value):
-        self._max_mp = value
-
     @property
     def mp(self):
         return self._mp
@@ -61,19 +47,9 @@ class Player:
     @property
     def power(self):
         return self._power
-
-    @power.setter
-    def power(self, value):
-        self._power = value
-
     @property
     def defense(self):
         return self._defense
-
-    @defense.setter
-    def defense(self, value):
-        self._defense = value
-
     @property
     def exp(self):
         return self._exp
@@ -85,10 +61,6 @@ class Player:
     @property
     def level(self):
         return self._level
-
-    @level.setter
-    def level(self, value):
-        self._level = value
 
     @property
     def item_list(self):
