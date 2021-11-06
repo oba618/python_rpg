@@ -1,7 +1,10 @@
+from const import ButtleAction, ItemListAction, Mode
 from event import Event
-from item import Item
-from key import Key
-from random import randint
+import key
+from key import InputKey
+from monster import Monster
+from player import Player
+import sys
 from text import Text
 
 
@@ -13,120 +16,139 @@ class Buttle:
         monster (Monster): モンスター
     """
 
-    ATTACK = 'こうげき'
-    MAGIC = 'まほう'
-    ITEM = 'アイテム'
-    ESCAPE = 'にげる'
-    ACTION_LIST = [
-        ATTACK,
-        MAGIC,
-        ITEM,
-        ESCAPE,
-    ]
+    def __init__(self, player: Player, monster: Monster):
+        self.player = player
+        self.monster = monster
+        self.appear_flg = True
+        self.monster_action_flg = False
+        self.select_index = 0
+        self.mode = Mode.BUTTLE
+        self.buttle_flg = True
 
-    def __init__(self, player, monster):
-        self._player = player
-        self._monster = monster
-        self._appear_flg = True
-        self._end_flg = False
-        self._monster_action_flg = False
-        self._select_index = 0
+    def mode_buttle(self):
+        """バトルモード
+        """
 
-    def start_buttle(self):
-
-        while self.check_buttle_loop():
+        while self.mode == Mode.BUTTLE:
 
             # 画面表示
             self.show_display()
-            if self._appear_flg:
-                self._appear_flg = False
-                continue
 
-            # HPを確認
-            self.check_monster_hp()
-            self.check_player_hp()
-            if self._end_flg:
-                return
+            if self.monster.appear_flg:
+                self.monster.appear_flg = False
+                continue
 
             # アクションリスト表示
-            self.show_action_list()
+            self.player.show_action_list(self.select_index)
 
-            # キー入力受付
-            input_key = Event.input_player_key()
+            # キー入力に対応したアクション
+            self.action_in_buttle(key.get_input_key_obj(Event.input_player_key()))
 
-            # キー入力に応じてアクション
-            self.action_player_key(input_key)
+            # モンスター死亡判定
+            if self.is_dead(self.monster):
 
-            # 攻撃によってモンスターのHPが0以下になった場合
-            if self._monster.hp <= 0:
-                continue
+                # プレイヤー勝利
+                self.player.win_buttle(self.monster)
+
+                # フィールドモードへ
+                self.mode = Mode.FIELD
+                self.buttle_flg = False
+                return
 
             # モンスターの攻撃
-            if self._monster_action_flg:
-                self.action_monster()
+            if self.monster.action_flg:
+                self.monster.attack(self.player)
 
-    def show_item_list(self):
-        """アイテム一覧を表示
+            # プレイヤー死亡判定
+            if self.is_dead(self.player):
+
+                # ゲームオーバーモードへ
+                self.mode = Mode.GAME_OVER
+                self.buttle_flg = False
+                return
+
+    def action_in_buttle(self, key_obj: InputKey):
+        """バトルモードでのアクション
+
+        Args:
+            key_obj (InputKey): キーオブジェクト
         """
-        self._select_index = 0
-        loop_flg = True
 
-        while loop_flg:
-            Event.clear()
+        # カーソル動く
+        if key_obj.buttle_action == ButtleAction.MOVE:
+            self.select_index = key_obj.move_cursor(
+                len(self.player.action_list),
+                self.select_index,
+            )
 
-            # アイテム一覧を表示
-            self.show_display_top()
-            self.show_items()
+        # 決定
+        if key_obj.buttle_action == ButtleAction.DECISION:
+            self.mode = self.player.action_in_buttle(self.select_index, self.monster)
 
-            # アイテムが無ければリターン
-            if not self._player.item_list:
-                loop_flg = False
-                continue
+        # 画面遷移
+        if key_obj.buttle_action == ButtleAction.CHANGE:
+            self.mode = key_obj.change_display()
 
-            # キー入力待ち
-            input_key = Event.input_player_key()
+    def is_dead(self, target) -> bool:
+        """死亡判定
 
-            # アイテム一覧内でのセレクト
-            loop_flg = self.select_use_item(input_key)
+        Args:
+            target (Player or Monster): ターゲット
 
-        self._select_index = 0
+        Returns:
+            bool: 死亡判定
+        """
+        return target.hp <= 0
 
     def show_display(self):
+        """ディスプレイ表示
+        """
 
+        # 上部表示
         Event.clear()
         self.show_display_top()
 
         # モンスター登場
-        if self._appear_flg:
-            print(Text.MES_APPEAR_MONSTER.format(self._monster.name))
-            Event.input()
+        if self.monster.appear_flg:
+            self.monster.appear()
 
     def show_display_top(self):
+        """ディスプレイ上部表示
+        """
 
+        # 遊び方
         print(Text.MES_HOW_TO_PLAY)
+
+        # プレイヤーステータス
         print(Text.PLAYER_STATUS.format(
-            self._player.name,
-            self._player.hp,
-            self._player.max_hp,
-            self._player.mp,
-            self._player.max_mp
+            self.player.name,
+            self.player.hp,
+            self.player.max_hp,
+            self.player.mp,
+            self.player.max_mp
         ))
 
+        # モンスターステータス
         print(Text.MONSTER_STATUS.format(
-            self._monster.name,
-            self._monster.hp,
+            self.monster.name,
+            self.monster.hp,
         ))
 
-    def show_items(self):
+    def show_items(self, item_list: list):
+        """アイテム表示
+
+        Args:
+            item_list (list): アイテム一覧
+        """
 
         print(Text.ITEM_LIST_PREFIX)
 
         # アイテムがある場合
-        if self._player.item_list:
-            for index, item in enumerate(self._player.item_list):
+        if item_list:
+            for index, item in enumerate(item_list):
 
                 # 選択中のアイテムの場合は'[※]'を表示する
-                if index == self._select_index:
+                if index == self.select_index:
                     print(Text.ICON_SELECTED + item.title)
                 else:
                     print(Text.ICON_NOT_SELECTED + item.title)
@@ -140,189 +162,126 @@ class Buttle:
 
         print(Text.ITEM_LIST_SUFFIX)
 
-    def check_monster_hp(self):
-        if self._monster.hp <= 0:
-            print(Text.KNOCK_OUT_MONSTER.format(self._monster.name))
-            Event.input()
+    def mode_item_list(self):
+        """アイテム一覧を表示するループ
+        """
 
-            # 経験値獲得
-            self._player.exp += self._monster.level
-            print(Text.MES_GET_EXP.format(self._monster.level))
-            Event.input()
+        # インデックス初期化
+        self.select_index = 0
 
-            # レベルの二乗より経験値が大きい場合、レベルアップ
-            if self._player.level**2 <= self._player.exp:
-                self._player.level_up()
-                print(Text.MES_LEVEL_UP.format(self._player.name, self._player.level))
-                Event.input()
+        while self.mode == Mode.ITEM_LIST:
 
-            self._end_flg = True
+            Event.clear()
+            print(Text.MES_HOW_TO_PLAY)
 
-    def check_player_hp(self):
-        if self._player.hp <= 0:
-            print(Text.KNOCK_OUT_PLAYER.format(self._player.name))
-            Event.input()
+            # アイテム一覧表示
+            self.player.show_status()
+            self.player.show_item_list(self.select_index)
 
-            self._end_flg = True
+            # アイテムなしの場合
+            if not self.player.item_list:
+                self.mode = Mode.BUTTLE
+                return
 
-    def show_action_list(self):
-        print(Text.MES_CHOOSE_ACTION)
-        for index, action in enumerate(self.ACTION_LIST):
-            if self._select_index == index:
-                print(Text.ICON_SELECTED + action)
-            else:
-                print(Text.ICON_NOT_SELECTED + action)
+            # キー入力に応じた処理
+            self.action_in_item_list(
+                key.get_input_key_obj(Event.input_player_key()))
 
-    def action_player_key(self, input_key):
-
-        # UPの場合
-        if input_key == Key.UP:
-            self._select_index = self._select_index - 1 \
-                if self._select_index > 0 \
-                else len(self.ACTION_LIST) - 1
-
-        # DOWNの場合
-        elif input_key == Key.DOWN:
-            self._select_index = self._select_index + 1 \
-                if self._select_index < len(self.ACTION_LIST) - 1 \
-                else 0
-
-        # ESCの場合
-        elif input_key == Key.ESC:
-            pass
-
-        # STATUSの場合
-        elif input_key == Key.STATUS:
-            pass
-
-        # HELPの場合
-        elif input_key == Key.HELP:
-            pass
-
-        # ITEMの場合
-        elif input_key == Key.ITEM:
-            self.show_item_list()
-
-        # DECESIONの場合、未入力の場合
-        elif input_key == Key.DECISION or \
-                input_key == Key.EMPTY:
-
-            # プレイヤーの行動
-            self.action_player()
-
-        # 無効なキーの場合
-        else:
-            input(Text.MES_CAN_NOT_USE_KEY)
-
-    def check_buttle_loop(self):
-        return not self._end_flg
-
-    def action_monster(self):
-
-        input(Text.MES_ATTACK_FROM_MONSTER.format(self._monster.name))
-        damage = self._monster.power + randint(0, self._monster.level) - self._player.defense
-        if damage < 0:
-            damage = 0
-        self._player.hp -= damage
-        input(Text.MES_DAMAGE.format(damage))
-
-        self._monster_action_flg = False
-
-    def select_use_item(self, input_key: str) -> bool:
-        """戦闘中アイテム一覧、セレクト
+    def action_in_item_list(self, key_obj: InputKey):
+        """アイテム一覧でのアクション
 
         Args:
-            input_key (str): インプットキー
+            key_obj (InputKey): キーオブジェクト
+        """
+
+        # カーソル移動
+        if key_obj.item_list_action == ItemListAction.MOVE:
+            self.select_index = key_obj.move_cursor(
+                len(self.player.item_list),
+                self.select_index,
+            )
+
+        # アイテム使用
+        if key_obj.item_list_action == ItemListAction.DECISION:
+            self.player.use_item(self.select_index)
+            self.select_index = 0
+
+        # バトルに戻る
+        if key_obj.item_list_action == ItemListAction.ESCAPE:
+            self.mode = Mode.BUTTLE
+
+    def mode_status(self):
+        """プレイヤーのステータス詳細を表示
+        """
+
+        Event.clear()
+        print(Text.MES_HOW_TO_PLAY)
+
+        # 概要ステータスを表示
+        self.player.show_status()
+        self.player.show_status_detail()
+        Event.input()
+
+        # バトルに戻る
+        self.mode = Mode.BUTTLE
+
+    def mode_help(self):
+        """ヘルプモード
+        """
+
+        # ヘルプ表示
+        Event.clear()
+        print('show help')
+        Event.input()
+
+        self.mode = Mode.BUTTLE
+
+    def mode_game_escape(self):
+        """エスケープモード
+        """
+
+        self.show_display()
+        print(Text.STRING_DECORATION)
+
+        # 確認
+        if Event.confirmation():
+
+            # ゲーム終了
+            Event.clear()
+            print(Text.GAME_ESCAPE)
+            sys.exit()
+
+        else:
+            self.mode = Mode.BUTTLE
+
+    def mode_field(self):
+        """フィールドモードへ
+        """
+        self.buttle_flg = False
+
+    def start(self) -> Mode:
+        """バトルスタート
 
         Returns:
-            bool: アイテム一覧を開いたままにするか否か
+            Mode: モード
         """
 
-        # ITEMの場合、ESCの場合、
-        if input_key == Key.ITEM or \
-                input_key == Key.ESC:
+        while self.buttle_flg:
 
-            return False
+            # モード定義
+            define = {
+                Mode.FIELD: self.mode_field,
+                Mode.BUTTLE: self.mode_buttle,
+                Mode.ITEM_LIST: self.mode_item_list,
+                Mode.ESCAPE: self.mode_game_escape,
+                Mode.STATUS: self.mode_status,
+                Mode.HELP: self.mode_help,
+            }
 
-        # UPの場合
-        elif input_key == Key.UP:
-            self._select_index = self._select_index - 1 \
-                if self._select_index > 0 \
-                else len(self._player.item_list) - 1
+            # モード選択
+            method = define.get(self.mode)
 
-            return True
+            # モード実行
+            method()
 
-        # DOWNの場合
-        elif input_key == Key.DOWN:
-            self._select_index = self._select_index + 1 \
-                if self._select_index < len(self._player.item_list) - 1 \
-                else 0
-
-            return True
-
-        # DECISIONの場合、未入力の場合
-        elif input_key == Key.DECISION or \
-                input_key == Key.EMPTY:
-            item_object = self._player.item_list[self._select_index]
-            print(Text.USE_ITEM_CONFIRM.format(item_object.description))
-            answer = Event.input()
-
-            # Yesの場合
-            if Event.is_yes(answer):
-                if item_object == Item.HERBS:
-                    self._player.hp += 100
-                    if self._player.hp > self._player.max_hp:
-                        self._player.hp = self._player.max_hp
-                    self._player.item_list.pop(self._select_index)
-                    print(Text.MES_USE_HERB)
-                    Event.input()
-                    self._monster_action_flg = True
-
-                    return
-
-                else:
-                    print(Text.MES_USE_EQUIPMENT)
-                    Event.input()
-
-        # 想定外のキーの場合はアイテム一覧から抜ける
-        else:
-            return
-
-    def action_player(self):
-        """プレイヤーのアクション
-        """
-
-        # こうげきの場合
-        if self._select_index == self.ACTION_LIST.index(self.ATTACK):
-            # プレイヤーの攻撃
-            input(Text.MES_ATTACK_FROM_PLAYER.format(self._player.name))
-            damage = self._player.power + randint(0, self._player.level)
-            input(Text.MES_DAMAGE.format(damage))
-            self._monster.hp -= damage
-            self._monster_action_flg = True
-
-        # まほうの場合
-        elif self._select_index == self.ACTION_LIST.index(self.MAGIC):
-            input(Text.MES_MAGIC.format(self._player.name))
-            if self._player.mp > 0:
-                self._player.mp -= 1
-                damage = 100 + self._player.level * 10
-                self._monster.hp -= damage
-                input(Text.MES_DAMAGE.format(damage))
-                self._monster_action_flg = True
-            else:
-                input(Text.MES_MP_IS_EMPTY)
-
-        # アイテムの場合
-        elif self._select_index == self.ACTION_LIST.index(self.ITEM):
-            self.show_item_list()
-
-        # にげるの場合
-        elif self._select_index == self.ACTION_LIST.index(self.ESCAPE):
-            escape = randint(1, 100)
-            if escape >= 30:
-                input(Text.MES_ESCAPE)
-                self._end_flg = True
-            else:
-                input(Text.MES_CAN_NOT_ESCAPE)
-                self._monster_action_flg = True
+        return self.mode

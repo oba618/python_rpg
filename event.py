@@ -25,14 +25,6 @@ class Event:
         """
         return True if answer in cls.YES_LIST else False
 
-    @staticmethod
-    def is_encount(counter):
-        """モンスターと戦闘するか否か
-        """
-        return True \
-            if int(random() * 10) % 9 == 0 or counter % 20 == 0 \
-            else False
-
     @classmethod
     def confirmation(cls) -> bool:
         """確認
@@ -139,6 +131,7 @@ class Event:
         game_level = ''
         while not game_level:
             Event.clear()
+            print(Text.STRING_DECORATION)
             print(Text.MES_SELECT_GAME_LEVEL)
             game_level = cls.input()
 
