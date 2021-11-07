@@ -25,7 +25,6 @@ class Process:
         self.game_flg = True
         self.counter = 0
         self.select_index = 0
-        self.show_item_list_flg = False
         self.mode = Mode.START
         self.start()
 
@@ -168,7 +167,7 @@ class Process:
         self.counter += 1
 
         # バトルモードへ
-        if int(random() * 10) % 9 == 0 or self.counter % 20 == 0:
+        if int(random() * 100) % 20 == 0 or self.counter % 50 == 0:
             self.mode = Mode.BUTTLE
 
     def mode_buttle(self):
@@ -257,7 +256,7 @@ class Process:
         # ゲームクリア
         Event.clear()
         print(Text.GAME_CLEAR)
-        
+
         self.game_flg = False
 
     def start(self):

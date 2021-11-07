@@ -35,7 +35,7 @@ class Monster:
         """
 
         # スライム作成
-        if 0 <= counter < 30:
+        if 0 <= counter < 50:
             hp = 20 + randint(1, 3)
             power = 10 + randint(1, 3)
             level = 1
@@ -43,7 +43,7 @@ class Monster:
             return (self.SLIME, hp, power, level)
 
         # ゴブリン作成
-        elif 30 <= counter < 60:
+        elif 50 <= counter < 100:
             hp = 50 + randint(10, 15)
             power = 20 + randint(5, 10)
             level = 2
@@ -51,7 +51,7 @@ class Monster:
             return (self.GOBLINS, hp, power, level)
 
         # ゴーレム作成
-        elif 60 <= counter < 90:
+        elif 100 <= counter < 150:
             hp = 100 + randint(20, 30)
             power = 30 + randint(10, 20)
             level = 5

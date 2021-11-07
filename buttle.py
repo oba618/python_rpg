@@ -42,7 +42,8 @@ class Buttle:
             self.player.show_action_list(self.select_index)
 
             # キー入力に対応したアクション
-            self.action_in_buttle(key.get_input_key_obj(Event.input_player_key()))
+            self.action_in_buttle(
+                key.get_input_key_obj(Event.input_player_key()))
 
             # モンスター死亡判定
             if self.is_dead(self.monster):
@@ -83,7 +84,10 @@ class Buttle:
 
         # 決定
         if key_obj.buttle_action == ButtleAction.DECISION:
-            self.mode = self.player.action_in_buttle(self.select_index, self.monster)
+            self.mode = self.player.action_in_buttle(
+                self.select_index,
+                self.monster,
+            )
 
         # 画面遷移
         if key_obj.buttle_action == ButtleAction.CHANGE:
@@ -209,6 +213,7 @@ class Buttle:
         # バトルに戻る
         if key_obj.item_list_action == ItemListAction.ESCAPE:
             self.mode = Mode.BUTTLE
+            self.select_index = 0
 
     def mode_status(self):
         """プレイヤーのステータス詳細を表示

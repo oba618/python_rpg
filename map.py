@@ -8,87 +8,25 @@ class Map:
     """フィールドマップのクラス
     """
 
-    @property
-    def counter(self):
-        return self._counter
+    def __init__(self, field_level):
+        self.now_h = 1
+        self.now_w = 1
+        self.field_level = int('1')     # レベル分け作成予定
+        self.field_number = 11
+        self.map_list = self.create_map()
 
-    @counter.setter
-    def counter(self, value):
-        self._counter = value
-
-    @property
-    def now_h(self):
-        return self._now_h
-
-    @now_h.setter
-    def now_h(self, value):
-        self._now_h = value
-
-    @property
-    def now_w(self):
-        return self._now_w
-
-    @now_w.setter
-    def now_w(self, value):
-        self._now_w = value
-
-    @property
-    def goal_flg(self):
-        return self._goal_flg
-
-    @goal_flg.setter
-    def goal_flg(self, value):
-        self._goal_flg = value
-
-    @property
-    def game_over_flg(self):
-        return self._game_over_flg
-
-    @game_over_flg.setter
-    def game_over_flg(self, value):
-        self._game_over_flg = value
-
-    @property
-    def show_item_flg(self):
-        return self._show_item_flg
-
-    @show_item_flg.setter
-    def show_item_flg(self, value):
-        self._show_item_flg = value
-
-    @property
-    def field(self):
-        return self._field
-
-    @field.setter
-    def field(self, value):
-        self._field = value
-
-    def __init__(self, game_level):
-        self._now_h = 1
-        self._now_w = 1
-        self._counter = 0
-        self._goal_flg = False
-        self._game_over_flg = False
-        self._show_item_flg = False
-        self._field = ''
-        self._map_lists = self.create_map(game_level)
-
-    def create_map(self, game_level: str) -> list:
+    def create_map(self) -> list:
         """フィールドマップを作成する
-
-        Args:
-            game_level (str): ゲームレベル
 
         Returns:
             list: フィールドマップ
         """
 
         # レベルに応じたマップを選択
-        field_map = Field.FIELDS[int(game_level) - 1][0]
+        field_map = Field.FIELDS[self.field_level][self.field_number]
 
         # マップにプレイヤーを配置
-        field_map[self._now_h][self._now_w] = Item.PLAYER.value
+        field_map[self.now_h][self.now_w] = Item.PLAYER.value
 
         return field_map
 
@@ -99,7 +37,7 @@ class Map:
         print(Text.MES_HOW_TO_PLAY)
 
         # 二次元配列の文字列を、コマンドライン表示用に変換
-        for array in self._map_lists:
+        for array in self.map_list:
             map = ''
             for string in array:
                 map = map + Item(string).map_item
@@ -112,18 +50,80 @@ class Map:
             height (int): 座標高
             width (int): 座標幅
         """
+        next_height = self.now_h + height
+        next_width = self.now_w + width
 
-        # 次の移動先
-        try:
+        # 画面端の場合
+        if self.is_out_of_range(next_height, next_width):
+            next_field = self.scroll_map(height, width)
+
+        else:
             next_field \
-                = self._map_lists[self.now_h + height][self._now_w + width]
+                = self.map_list[next_height][next_width]
 
-        except IndexError:
-            self.move_field(height, width)
+            # マップ更新
+            if not next_field == Item.BLOCK.value:
+                self.change_field(height, width)
+
+            # 壁の場合
+            if next_field == Item.BLOCK.value:
+                print(Text.MES_CAN_NOT_MOVE)
+                Event.input()
+                return
+
+            # 空地の場合
+            if next_field == Item.EMPTY.value:
+                return
+
+        # 移動先が、アイテムの場合
+        return next_field
+
+    def change_field(self, height: int, width: int):
+        """現在位置を空地へ
+        """
+
+        # 元の位置を空へ
+        self.map_list[self.now_h][self.now_w] = Item.EMPTY.value
+
+        # 座標更新
+        self.now_h += height
+        self.now_w += width
+
+        # 次の位置へ移動
+        self.map_list[self.now_h][self.now_w] = Item.PLAYER.value
+
+    def is_out_of_range(self, height: int, width: int) -> bool:
+        """リストの範囲外か否か（リストの範囲外の場合：True）
+
+        Args:
+            height (int): 高
+            width (int): 幅
+
+        Returns:
+            bool: リストの範囲外か否か
+        """
+        return not (
+            0 <= height < len(self.map_list)
+            and 0 <= width < len(self.map_list[0])
+        )
+
+    def scroll_map(self, height: int, width: int) -> tuple:
+
+        # スクロール先
+        next_field_number = self.field_number + (height * 10 + width)
+
+        # 反転した座標を取得
+        height, width = self.get_revers_point(height, width)
+
+        # マップ作成
+        next_map_list = Field.FIELDS[self.field_level][next_field_number]
+
+        next_field = next_map_list[height][width]
 
         # マップ更新
         if not next_field == Item.BLOCK.value:
-            self._change_field(height, width)
+            self.field_number = next_field_number
+            self._scroll_field(height, width, next_map_list)
 
         # 壁の場合
         if next_field == Item.BLOCK.value:
@@ -135,19 +135,45 @@ class Map:
         if next_field == Item.EMPTY.value:
             return
 
-        # 移動先が、アイテムの場合
         return next_field
 
-    def _change_field(self, height, width):
+    def get_revers_point(self, height: int, width: int) -> tuple:
+
+        # 上へ
+        if (self.now_h + height) < 0:
+            height = len(self.map_list) - 1
+            width = self.now_w + width
+
+        # 下へ
+        elif (self.now_h + height) > (len(self.map_list) - 1):
+            height = 0
+            width = self.now_w + width
+
+        # 左へ
+        elif (self.now_w + width) < 0:
+            height = self.now_h + height
+            width = len(self.map_list[0]) - 1
+
+        # 右へ
+        elif (self.now_w + width) > (len(self.map_list[0]) - 1):
+            height = self.now_h + height
+            width = 0
+
+        return height, width
+
+    def _scroll_field(
+            self, height: int, width: int, next_map_list):
         """現在位置を空地へ
         """
-        self._map_lists[self.now_h][self.now_w] = Item.EMPTY.value
 
-        self._now_h += height
-        self._now_w += width
+        # 元の位置を空へ
+        self.map_list[self.now_h][self.now_w] = Item.EMPTY.value
 
-        self._map_lists[self.now_h][self.now_w] = Item.PLAYER.value
+        # 座標更新
+        self.now_h = height
+        self.now_w = width
 
-    def move_field(self, hegith, width):
-        print('test is OK')
-        Event.input()
+        self.map_list = next_map_list
+
+        # 次の位置へ移動
+        self.map_list[self.now_h][self.now_w] = Item.PLAYER.value

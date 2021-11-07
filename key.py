@@ -61,15 +61,15 @@ class InputKey(ABC):
         self.buttle_action = ButtleAction.NOTHING
 
     @abstractmethod
-    def move_map(self):
+    def move_map(self) -> list:
         pass
 
     @abstractmethod
-    def move_cursor(self):
+    def move_cursor(self) -> int:
         pass
 
     @abstractmethod
-    def change_display(self):
+    def change_display(self) -> Mode:
         pass
 
 
@@ -118,7 +118,7 @@ class InputKeyLeft(InputKey):
     def __init__(self, value):
         self.value = value
         self.field_action = FieldAction.MOVE
-        self.item_list_action = ItemListAction.NOTHING
+        self.item_list_action = ItemListAction.ESCAPE
         self.buttle_action = ButtleAction.NOTHING
 
     def move_map(self):
@@ -136,7 +136,7 @@ class InputKeyRight(InputKey):
     def __init__(self, value):
         self.value = value
         self.field_action = FieldAction.MOVE
-        self.item_list_action = ItemListAction.NOTHING
+        self.item_list_action = ItemListAction.ESCAPE
         self.buttle_action = ButtleAction.NOTHING
 
     def move_map(self):
@@ -190,7 +190,7 @@ class InputKeyStatus(InputKey):
     def __init__(self, value):
         self.value = value
         self.field_action = FieldAction.CHANGE
-        self.item_list_action = ItemListAction.NOTHING
+        self.item_list_action = ItemListAction.ESCAPE
         self.buttle_action = ButtleAction.CHANGE
 
     def move_map(self):
@@ -226,7 +226,7 @@ class InputKeyHelp(InputKey):
     def __init__(self, value):
         self.value = value
         self.field_action = FieldAction.CHANGE
-        self.item_list_action = ItemListAction.NOTHING
+        self.item_list_action = ItemListAction.ESCAPE
         self.buttle_action = ButtleAction.CHANGE
 
     def move_map(self):

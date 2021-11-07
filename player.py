@@ -58,22 +58,19 @@ class Player:
         # 剣の場合
         if field == Item.WEAPON.value:
             self.power += 30
-            print(Text.MES_GET_WEAPON)
-            Event.input()
 
         # 盾の場合
         if field == Item.SIELD.value:
             self.defense += 10
-            print(Text.MES_GET_SIELD)
-            Event.input()
 
-        # 薬の場合
-        if field == Item.HERBS.value:
-            print(Text.MES_GET_HERBS)
-            Event.input()
+        item = Item(field)
+
+        # アイテムを手に入れた！
+        print(Text.MES_GET_ITEM.format(item.title))
+        Event.input()
 
         # アイテム一覧に詰める
-        self.item_list.append(Item(field))
+        self.item_list.append(item)
 
     def show_item_list(self, select_index: int):
         """アイテム一覧表示
@@ -86,6 +83,10 @@ class Player:
 
         # アイテム一覧表示
         if self.item_list:
+
+            # ソート
+            self.item_list.sort()
+
             for index, item in enumerate(self.item_list):
                 if select_index == index:
                     print(Text.ICON_SELECTED + item.title)
@@ -169,8 +170,8 @@ class Player:
         if Event.is_yes(answer):
 
             # ハーブの場合、HP回復
-            if item_object == Item.HERBS:
-                self.hp += 100
+            if item_object[:1] == Item.HERBS[:1]:
+                self.hp += item_object.recovery
 
                 # 最大値補正
                 if self.hp > self.max_hp:
@@ -179,7 +180,7 @@ class Player:
                 # リストからアイテムを削除
                 del self.item_list[select_index]
 
-                print(Text.MES_USE_HERB)
+                print(Text.MES_USE_HERB.format(item_object.recovery))
                 Event.input()
 
             # 使用不可

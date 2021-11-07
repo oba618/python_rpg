@@ -1,3 +1,6 @@
+from item import Color
+
+
 class Text:
     PLAYER_NAME_MAX_LENGTH = 10
 
@@ -9,7 +12,7 @@ class Text:
         + '　　　　　RPG created by Python\n' \
         + '\n' * 5 \
         + STRING_DECORATION \
-        + 'Enterを押してゲームスタート\n'
+        + 'Enterを押してゲームスタート'
 
     # text
     MES_INPUT_PLAYER_NAME = \
@@ -39,10 +42,10 @@ class Text:
         + '"yes" または "no" で応答してください [y/N]'
     MES_HOW_TO_PLAY = \
         '＝＝＝＝＝＝＝＝＝　操作方法　＝＝＝＝＝＝＝＝＝\n' \
-        + '[終了　　　：q ][上　　　　：w ][アイテム　：e ]\n' \
-        + '[左　　　　：a ][下　　　　：s ][右　　　　：d ]\n' \
+        + '[終了　　　：q ]['+Color.YELLOW+'上'+Color.END+'　　　　：w ][アイテム　：e ]\n' \
+        + '['+Color.YELLOW+'下'+Color.END+'　　　　：a ]['+Color.YELLOW+'下'+Color.END+'　　　　：s ]['+Color.YELLOW+'右'+Color.END+'　　　　：d ]\n' \
         + '[ステータス：z ][決定　　　：x ][ヘルプ　　：c ]\n' \
-        + '＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝\n'
+        + '＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝'
     HOW_TO_USE_ITEM = \
         '＝＝＝＝＝＝＝＝＝　操作方法　＝＝＝＝＝＝＝＝＝\n' \
         + '[　　　　　　　][上　　　　：w ][とじる　　：x ]\n' \
@@ -51,7 +54,7 @@ class Text:
         + '＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝\n'
     ITEM_LIST_PREFIX = '＃＃＃＃＃＃＃＃　アイテム一覧　＃＃＃＃＃＃＃＃\n'
     ITEM_LIST_NOTING = 'アイテムがありません。'
-    MES_USE_HERB = 'HPが少し回復した！'
+    MES_USE_HERB = 'HPが{}回復した！'
     MES_USE_EQUIPMENT = '装備品は持っているだけで効果があります'
     ITEM_LIST_SUFFIX = '\n＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃\n'
     USE_ITEM_CONFIRM = \
@@ -64,6 +67,7 @@ class Text:
     MES_GET_SIELD = '勇者の盾を手に入れた！'
     MES_GET_WEAPON = '勇者の剣を手に入れた！'
     MES_GET_HERBS = '薬草を手に入れた！'
+    MES_GET_ITEM = '{}を手に入れた！'
 
     # buttle
     MES_HOW_TO_BUTTLE = \
@@ -98,5 +102,6 @@ class Text:
     MES_ESCAPE = 'にげた！'
     MES_CAN_NOT_ESCAPE = 'にげることに、しっぱいした！'
 
+    GAME_ESCAPE = STRING_DECORATION + '\n\n ... ゲーム　終了 ... \n\n'
     GAME_OVER = STRING_DECORATION + '\n\n ... ゲーム　オーバー ... \n\n'
     GAME_CLEAR = STRING_DECORATION + '\n\n=== ゲーム　クリア === \n\n'
