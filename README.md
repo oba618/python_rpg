@@ -22,3 +22,4 @@ Anyone can participate in this project. Please contact us.
 # Authors
 - tobata
   - [@oba618](https://twitter.com/oba618)
+  - takahashi
