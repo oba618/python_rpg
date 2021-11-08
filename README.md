@@ -23,3 +23,6 @@ Anyone can participate in this project. Please contact us.
 - tobata
   - [@oba618](https://twitter.com/oba618)
   - takahashi
+
+# FreeArea
+ここはテストです。自由に使用してください。
