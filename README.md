@@ -22,3 +22,6 @@ Anyone can participate in this project. Please contact us.
 # Authors
 - tobata
   - [@oba618](https://twitter.com/oba618)
+
+# FreeArea
+ここはテストです。自由に使用してください。
