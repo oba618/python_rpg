@@ -23,3 +23,11 @@ Anyone can participate in this project. Please contact us.
 - tobata
   - [@oba618](https://twitter.com/oba618)
   - takahashi
+
+# Version
+- 1.0.0
+  - 2021-11-09 リリース
+  - スタートから、ゴールまで遊べるようになりました。
+
+# FreeArea
+ここはテストです。自由に使用してください。
