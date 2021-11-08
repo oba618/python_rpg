@@ -25,3 +25,5 @@ Anyone can participate in this project. Please contact us.
 
 # FreeArea
 ここはテストです。自由に使用してください。
+
+- 2度目のプルリクエストのテストです。
