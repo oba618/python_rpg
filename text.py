@@ -43,7 +43,7 @@ class Text:
     MES_HOW_TO_PLAY = \
         '＝＝＝＝＝＝＝＝＝　操作方法　＝＝＝＝＝＝＝＝＝\n' \
         + '[終了　　　：q ]['+Color.YELLOW+'上'+Color.END+'　　　　：w ][アイテム　：e ]\n' \
-        + '['+Color.YELLOW+'下'+Color.END+'　　　　：a ]['+Color.YELLOW+'下'+Color.END+'　　　　：s ]['+Color.YELLOW+'右'+Color.END+'　　　　：d ]\n' \
+        + '['+Color.YELLOW+'左'+Color.END+'　　　　：a ]['+Color.YELLOW+'下'+Color.END+'　　　　：s ]['+Color.YELLOW+'右'+Color.END+'　　　　：d ]\n' \
         + '[ステータス：z ][決定　　　：x ][ヘルプ　　：c ]\n' \
         + '＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝'
     HOW_TO_USE_ITEM = \
