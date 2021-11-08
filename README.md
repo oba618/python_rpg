@@ -30,4 +30,4 @@ Anyone can participate in this project. Please contact us.
   - スタートから、ゴールまで遊べるようになりました。
 
 # FreeArea
-ここはテストです。自由に使用してください。
+自由に使用してください。
