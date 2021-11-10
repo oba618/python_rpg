@@ -1,8 +1,7 @@
+import msvcrt
 import os
 import sys
-from random import random
 from key import Key
-
 from text import Text
 
 
@@ -46,7 +45,7 @@ class Event:
             str: バリデーションされた文字列
         """
         while True:
-            input_key = Event.input()
+            input_key = Event.push_player_key()
             for key, value in Key.KEY_LIST.items():
                 if input_key in value:
                     return key
@@ -54,6 +53,15 @@ class Event:
             # 不正な入力の場合
             else:
                 print(Text.MES_CAN_NOT_USE_KEY)
+
+    @classmethod
+    def push_player_key(cls) -> str:
+
+        key = ''
+        while not key:
+            key = msvcrt.kbhit()
+
+        return msvcrt.getwch()
 
     @staticmethod
     def check_player_key() -> str:
