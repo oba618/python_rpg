@@ -34,6 +34,7 @@ class Key:
     DECISION = 'x'
     HELP = 'c'
     EMPTY = ''
+    ENTER = '\r'
     KEY_LIST = {
         UP: ['w', 'W', 'ｗ', 'Ｗ'],
         DOWN: ['s', 'S', 'ｓ', 'Ｓ'],
@@ -45,6 +46,7 @@ class Key:
         DECISION: ['x', 'X', 'ｘ', 'Ｘ'],
         HELP: ['c', 'C', 'ｃ', 'Ｃ'],
         EMPTY: ['', ' ', '　'],
+        ENTER: ['\r']
     }
     MOVE_KEY_LIST = [
         UP, DOWN, LEFT, RIGHT,
@@ -257,6 +259,24 @@ class InputKeyEmpty(InputKey):
         pass
 
 
+class InputKeyEnter(InputKey):
+
+    def __init__(self, value):
+        self.value = value
+        self.field_action = FieldAction.NOTHING
+        self.item_list_action = ItemListAction.DECISION
+        self.buttle_action = ButtleAction.DECISION
+
+    def move_map(self):
+        pass
+
+    def move_cursor(self):
+        pass
+
+    def change_display(self):
+        pass
+
+
 def get_input_key_obj(input_key: str) -> InputKey:
     """キーオブジェクト取得
 
@@ -279,6 +299,7 @@ def get_input_key_obj(input_key: str) -> InputKey:
         Key.DECISION: InputKeyDecision,
         Key.HELP: InputKeyHelp,
         Key.EMPTY: InputKeyEmpty,
+        Key.ENTER: InputKeyEnter,
     }
 
     # オブジェクト取得
