@@ -1,7 +1,8 @@
 from random import random
 
-from src.views.buttle import Buttle
-from src.views.map import Map
+from src.controllers.inputKey import InputKey
+from src.controllers.inputKeyServer import InputKeyServer
+from src.item import Item
 from src.models.player import Player
 from src.models.monster import Monster
 from src.utils.const import (
@@ -10,9 +11,8 @@ from src.utils.const import (
     Mode,
 )
 from src.utils.event import Event
-from src.item import Item
-import src.controllers.key as key
-from src.controllers.key import InputKey
+from src.views.buttle import Buttle
+from src.views.map import Map
 from src.views.text import Text
 
 
@@ -55,7 +55,8 @@ class Game:
         self.map.show()
 
         # キー入力に対応した処理
-        self.action_in_field(key.get_input_key_obj(Event.input_player_key()))
+        self.action_in_field(
+            InputKeyServer.get_input_key_obj(Event.input_character()))
 
     def action_in_field(self, key_obj: InputKey):
         """フィールドでのアクション
@@ -93,7 +94,7 @@ class Game:
 
             # キー入力に応じた処理
             self.action_in_item_list(
-                key.get_input_key_obj(Event.input_player_key()))
+                InputKeyServer.get_input_key_obj(Event.input_character()))
 
     def action_in_item_list(self, key_obj: InputKey):
         """アイテム一覧でのアクション

@@ -1,7 +1,7 @@
 from random import randint
 
 from src.item import Item
-from src.controllers.key import Mode
+from src.utils.const import Mode
 from src.views.text import Text
 from src.utils.event import Event
 

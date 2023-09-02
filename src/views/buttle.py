@@ -1,15 +1,15 @@
 import sys
 
-from ..models.monster import Monster
-from ..models.player import Player
-from ..utils.const import (
+from src.controllers.inputKey import InputKey
+from src.controllers.inputKeyServer import InputKeyServer
+from src.models.monster import Monster
+from src.models.player import Player
+from src.utils.const import (
     ButtleAction,
     ItemListAction,
     Mode,
 )
-from ..utils.event import Event
-import src.controllers.key as key
-from src.controllers.key import InputKey
+from src.utils.event import Event
 from src.views.text import Text
 
 
@@ -48,7 +48,7 @@ class Buttle:
 
             # キー入力に対応したアクション
             self.action_in_buttle(
-                key.get_input_key_obj(Event.input_player_key()))
+                InputKeyServer.get_input_key_obj(Event.input_character()))
 
             # モンスター死亡判定
             if self.is_dead(self.monster):
@@ -194,7 +194,7 @@ class Buttle:
 
             # キー入力に応じた処理
             self.action_in_item_list(
-                key.get_input_key_obj(Event.input_player_key()))
+                InputKeyServer.get_input_key_obj(Event.input_character()))
 
     def action_in_item_list(self, key_obj: InputKey):
         """アイテム一覧でのアクション

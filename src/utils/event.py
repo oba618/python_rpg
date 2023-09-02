@@ -38,7 +38,7 @@ class Event:
         return sys.stdin.readline().rstrip('\n')
 
     @classmethod
-    def input_player_key(cls) -> str:
+    def input_character(cls) -> str:
         """標準入力の受付
 
         Returns:
@@ -47,7 +47,7 @@ class Event:
         while True:
             input_key = cls.input()
 
-            for key, value in Key.KEY_LIST.items():
+            for key, value in Key.KEY_DEF.items():
 
                 if input_key in value:
                     return key
