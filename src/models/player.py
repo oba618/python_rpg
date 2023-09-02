@@ -1,8 +1,9 @@
-from event import Event
-from item import Item
-from text import Text
 from random import randint
-from key import Mode
+
+from src.item import Item
+from src.controllers.key import Mode
+from src.views.text import Text
+from src.utils.event import Event
 
 
 class Player:
@@ -155,7 +156,7 @@ class Player:
         # アイテムの説明を表示、使用確認
         print(Text.USE_ITEM_CONFIRM.format(item_object.description))
 
-        self._use_item(item_object, Event.input(), select_index)
+        self._use_item(item_object, input(), select_index)
 
     def _use_item(self, item_object, answer, select_index):
         """アイテム使用

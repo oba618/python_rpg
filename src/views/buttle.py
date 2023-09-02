@@ -1,11 +1,16 @@
-from const import ButtleAction, ItemListAction, Mode
-from event import Event
-import key
-from key import InputKey
-from monster import Monster
-from player import Player
 import sys
-from text import Text
+
+from ..models.monster import Monster
+from ..models.player import Player
+from ..utils.const import (
+    ButtleAction,
+    ItemListAction,
+    Mode,
+)
+from ..utils.event import Event
+import src.controllers.key as key
+from src.controllers.key import InputKey
+from src.views.text import Text
 
 
 class Buttle:
@@ -249,7 +254,7 @@ class Buttle:
         print(Text.STRING_DECORATION)
 
         # 確認
-        if Event.confirmation():
+        if Event.confirm():
 
             # ゲーム終了
             Event.clear()

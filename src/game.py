@@ -1,32 +1,32 @@
-from buttle import Buttle
-from const import (
+from random import random
+
+from src.views.buttle import Buttle
+from src.views.map import Map
+from src.models.player import Player
+from src.models.monster import Monster
+from src.utils.const import (
     FieldAction,
     ItemListAction,
     Mode,
 )
-from event import Event
-from item import Item
-import key
-from key import InputKey
-from map import Map
-from monster import Monster
-from player import Player
-from random import random
-from text import Text
+from src.utils.event import Event
+from src.item import Item
+import src.controllers.key as key
+from src.controllers.key import InputKey
+from src.views.text import Text
 
 
-class Process:
+class Game:
     """ゲーム全体の流れを管理するクラス
     """
 
     def __init__(self):
         self.player = None
         self.map = None
-        self.game_flg = True
-        self.counter = 0
-        self.select_index = 0
-        self.mode = Mode.START
-        self.start()
+        self.game_flg = None
+        self.counter = None
+        self.select_index = None
+        self.mode_key = None
 
     def mode_start(self):
         """スタートモード
@@ -45,7 +45,7 @@ class Process:
         Event.show_prologue(self.player.name)
 
         # フィールドモードへ
-        self.mode = Mode.FIELD
+        self.mode_key = Mode.FIELD
 
     def mode_field(self):
         """モードフィールド
@@ -70,14 +70,14 @@ class Process:
 
         # 画面遷移
         if key_obj.field_action == FieldAction.CHANGE:
-            self.mode = key_obj.change_display()
+            self.mode_key = key_obj.change_display()
 
     def mode_item_list(self):
         """アイテム一覧モード
         """
         self.select_index = 0
 
-        while self.mode == Mode.ITEM_LIST:
+        while self.mode_key == Mode.ITEM_LIST:
 
             Event.clear()
             print(Text.MES_HOW_TO_PLAY)
@@ -88,7 +88,7 @@ class Process:
 
             # アイテムなし
             if not self.player.item_list:
-                self.mode = Mode.FIELD
+                self.mode_key = Mode.FIELD
                 return
 
             # キー入力に応じた処理
@@ -116,7 +116,7 @@ class Process:
 
         # フィールドモードへ
         if key_obj.item_list_action == ItemListAction.ESCAPE:
-            self.mode = Mode.FIELD
+            self.mode_key = Mode.FIELD
 
     def _show_item_list(self):
         """アイテム一覧を表示
@@ -135,7 +135,7 @@ class Process:
             Event.input()
 
             # フィールドモードへ
-            self.mode = Mode.FIELD
+            self.mode_key = Mode.FIELD
 
         print(Text.ITEM_LIST_SUFFIX)
 
@@ -151,7 +151,7 @@ class Process:
 
         # ゴール
         if item == Item.GOAL.value:
-            self.mode = Mode.GAME_CLEAR
+            self.mode_key = Mode.GAME_CLEAR
             return
 
         # アイテム取得
@@ -168,7 +168,7 @@ class Process:
 
         # バトルモードへ
         if int(random() * 100) % 20 == 0 or self.counter % 50 == 0:
-            self.mode = Mode.BUTTLE
+            self.mode_key = Mode.BUTTLE
 
     def mode_buttle(self):
         """バトルモード
@@ -181,7 +181,7 @@ class Process:
         buttle = Buttle(self.player, monster)
 
         # バトル
-        self.mode = buttle.start()
+        self.mode_key = buttle.start()
 
     def use_item(self):
         """アイテム使用
@@ -208,7 +208,7 @@ class Process:
         Event.input()
 
         # フィールドモードへ
-        self.mode = Mode.FIELD
+        self.mode_key = Mode.FIELD
 
     def mode_help(self):
         """ヘルプモード
@@ -220,7 +220,7 @@ class Process:
         Event.input()
 
         # フィールドモードへ
-        self.mode = Mode.FIELD
+        self.mode_key = Mode.FIELD
 
     def mode_game_escape(self):
         """エスケープモード
@@ -230,7 +230,7 @@ class Process:
         print(Text.STRING_DECORATION)
 
         # 終了
-        if Event.confirmation():
+        if Event.confirm():
             Event.clear()
             print(Text.GAME_ESCAPE)
             self.game_flg = False
@@ -262,24 +262,28 @@ class Process:
     def start(self):
         """メインループ
         """
+        self.game_flg = True
+        self.counter = 0
+        self.select_index = 0
+        self.mode_key = Mode.START
+
+        # モード定義
+        mode_def = {
+            Mode.START: self.mode_start,
+            Mode.FIELD: self.mode_field,
+            Mode.ITEM_LIST: self.mode_item_list,
+            Mode.STATUS: self.mode_status,
+            Mode.HELP: self.mode_help,
+            Mode.BUTTLE: self.mode_buttle,
+            Mode.ESCAPE: self.mode_game_escape,
+            Mode.GAME_CLEAR: self.mode_game_clear,
+            Mode.GAME_OVER: self.mode_game_over,
+        }
 
         while self.game_flg:
 
-            # モード定義
-            define = {
-                Mode.START: self.mode_start,
-                Mode.FIELD: self.mode_field,
-                Mode.ITEM_LIST: self.mode_item_list,
-                Mode.STATUS: self.mode_status,
-                Mode.HELP: self.mode_help,
-                Mode.BUTTLE: self.mode_buttle,
-                Mode.ESCAPE: self.mode_game_escape,
-                Mode.GAME_CLEAR: self.mode_game_clear,
-                Mode.GAME_OVER: self.mode_game_over,
-            }
-
-            # モード設定
-            method = define.get(self.mode)
+            # モード取得
+            mode = mode_def[self.mode_key]
 
             # モード実行
-            method()
+            mode()

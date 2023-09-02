@@ -1,6 +1,7 @@
-from event import Event
 from random import randint
-from text import Text
+
+from src.views.text import Text
+from src.utils.event import Event
 
 
 class Monster:

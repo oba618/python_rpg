@@ -1,7 +1,7 @@
-from event import Event
-from item import Item
-from field import Field
-from text import Text
+from src.utils.event import Event
+from src.item import Item
+from src.views.field import Field
+from src.views.text import Text
 
 
 class Map:

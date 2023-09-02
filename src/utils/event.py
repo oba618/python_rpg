@@ -1,8 +1,8 @@
-import msvcrt
 import os
 import sys
-from key import Key
-from text import Text
+
+from src.controllers.key import Key
+from src.views.text import Text
 
 
 class Event:
@@ -25,7 +25,7 @@ class Event:
         return True if answer in cls.YES_LIST else False
 
     @classmethod
-    def confirmation(cls) -> bool:
+    def confirm(cls) -> bool:
         """確認
         """
         answer = input(Text.MES_CONFIRMATION)
@@ -45,40 +45,16 @@ class Event:
             str: バリデーションされた文字列
         """
         while True:
-            input_key = Event.push_player_key()
+            input_key = cls.input()
+
             for key, value in Key.KEY_LIST.items():
+
                 if input_key in value:
                     return key
 
             # 不正な入力の場合
             else:
                 print(Text.MES_CAN_NOT_USE_KEY)
-
-    @classmethod
-    def push_player_key(cls) -> str:
-
-        key = ''
-        while not key:
-            key = msvcrt.kbhit()
-
-        return msvcrt.getwch()
-
-    @staticmethod
-    def check_player_key() -> str:
-        """メインループでの入力チェック
-
-        Returns:
-            str: フィールドマップ
-        """
-        player_key = Event.input_player_key()
-
-        if not player_key:
-            return ''
-
-        if len(player_key) >= 2:
-            return ''
-
-        return player_key
 
     @classmethod
     def show_title(cls):

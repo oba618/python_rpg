@@ -1,10 +1,11 @@
-from process import Process
+from src.game import Game
 
 
 def main():
 
-    # ゲームプロセス初期化
-    Process()
+    # ゲーム初期化
+    game = Game()
+    game.start()
 
 
 if __name__ == '__main__':

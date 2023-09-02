@@ -1,8 +1,8 @@
 from io import StringIO
 
-from player import Player
-from process import Process
-from text import Text
+from models.player import Player
+from src.game import Game
+from views.text import Text
 
 
 class TestProcess:
@@ -11,7 +11,7 @@ class TestProcess:
         タイトrが表示されること
         """
         monkeypatch.setattr('sys.stdin', StringIO(''))
-        Process.show_title()
+        Game.show_title()
         out, err = capfd.readouterr()
 
         assert out == Text.TITLE + '\n'
@@ -24,7 +24,7 @@ class TestProcess:
         expect_player_name = 'テストプレイヤー'
         monkeypatch.setattr('sys.stdin', StringIO(expect_player_name))
 
-        assert Process.input_player_name() == expect_player_name
+        assert Game.input_player_name() == expect_player_name
 
     def test_input_player_name_long_name(self, monkeypatch):
         """正常
@@ -34,7 +34,7 @@ class TestProcess:
         bad_input = 'とてもながいプレイヤーのなまえ'
         monkeypatch.setattr('sys.stdin', StringIO(bad_input))
 
-        assert Process.input_player_name() == expect_player_name
+        assert Game.input_player_name() == expect_player_name
 
     def test_input_player_name_notingh(self, monkeypatch):
         """正常
@@ -44,7 +44,7 @@ class TestProcess:
         bad_input = None
         monkeypatch.setattr('sys.stdin', StringIO(bad_input))
 
-        assert Process.input_player_name() == expect_player_name
+        assert Game.input_player_name() == expect_player_name
 
     def test_confirm_input_player_name_answer_is_yes(self, monkeypatch):
         """正常
@@ -52,7 +52,7 @@ class TestProcess:
         """
         expect_player_name = 'テストプレイヤー'
         monkeypatch.setattr('sys.stdin', StringIO('y'))
-        player_name = Process.confirm_input_player_name(expect_player_name)
+        player_name = Game.confirm_input_player_name(expect_player_name)
 
         assert player_name == expect_player_name
 
@@ -63,7 +63,7 @@ class TestProcess:
         player_name = 'テストプレイヤー'
         expect_player_name = ''
         monkeypatch.setattr('sys.stdin', StringIO('n'))
-        player_name = Process.confirm_input_player_name(player_name)
+        player_name = Game.confirm_input_player_name(player_name)
 
         assert player_name == expect_player_name
 
@@ -76,70 +76,70 @@ class TestProcess:
         input_key_list = ['q', 'Q', 'ｑ', 'Ｑ']
         for input_key in input_key_list:
             monkeypatch.setattr('sys.stdin', StringIO(input_key))
-            assert Process.input_player_key() == expect_string
+            assert Game.input_player_key() == expect_string
 
         # Wの場合
         expect_string = 'w'
         input_key_list = ['w', 'W', 'ｗ', 'Ｗ']
         for input_key in input_key_list:
             monkeypatch.setattr('sys.stdin', StringIO(input_key))
-            assert Process.input_player_key() == expect_string
+            assert Game.input_player_key() == expect_string
 
         # Eの場合
         expect_string = 'e'
         input_key_list = ['e', 'E', 'え', 'Ｅ']
         for input_key in input_key_list:
             monkeypatch.setattr('sys.stdin', StringIO(input_key))
-            assert Process.input_player_key() == expect_string
+            assert Game.input_player_key() == expect_string
 
         # Aの場合
         expect_string = 'a'
         input_key_list = ['a', 'A', 'あ', 'Ａ']
         for input_key in input_key_list:
             monkeypatch.setattr('sys.stdin', StringIO(input_key))
-            assert Process.input_player_key() == expect_string
+            assert Game.input_player_key() == expect_string
 
         # Sの場合
         expect_string = 's'
         input_key_list = ['s', 'S', 'ｓ', 'Ｓ']
         for input_key in input_key_list:
             monkeypatch.setattr('sys.stdin', StringIO(input_key))
-            assert Process.input_player_key() == expect_string
+            assert Game.input_player_key() == expect_string
 
         # Dの場合
         expect_string = 'd'
         input_key_list = ['d', 'D', 'ｄ', 'Ｄ']
         for input_key in input_key_list:
             monkeypatch.setattr('sys.stdin', StringIO(input_key))
-            assert Process.input_player_key() == expect_string
+            assert Game.input_player_key() == expect_string
 
         # Zの場合
         expect_string = 'z'
         input_key_list = ['z', 'Z', 'ｚ', 'Ｚ']
         for input_key in input_key_list:
             monkeypatch.setattr('sys.stdin', StringIO(input_key))
-            assert Process.input_player_key() == expect_string
+            assert Game.input_player_key() == expect_string
 
         # Xの場合
         expect_string = 'x'
         input_key_list = ['x', 'X', 'ｘ', 'Ｘ']
         for input_key in input_key_list:
             monkeypatch.setattr('sys.stdin', StringIO(input_key))
-            assert Process.input_player_key() == expect_string
+            assert Game.input_player_key() == expect_string
 
         # Cの場合
         expect_string = 'c'
         input_key_list = ['c', 'C', 'ｃ', 'Ｃ']
         for input_key in input_key_list:
             monkeypatch.setattr('sys.stdin', StringIO(input_key))
-            assert Process.input_player_key() == expect_string
+            assert Game.input_player_key() == expect_string
 
         # 空文字の場合
         expect_string = ''
         input_key_list = ['', ' ', '　']
         for input_key in input_key_list:
             monkeypatch.setattr('sys.stdin', StringIO(input_key))
-            assert Process.input_player_key() == expect_string
+            assert Game.input_player_key() == expect_string
 
     def test_input_player_key_out_of_range(self, monkeypatch, capfd):
         """正常
@@ -148,7 +148,7 @@ class TestProcess:
         # test_1
         input_key = 't'
         monkeypatch.setattr('sys.stdin', StringIO(input_key))
-        Process.input_player_key()
+        Game.input_player_key()
         out, err = capfd.readouterr()
 
         assert out == Text.MES_CAN_NOT_USE_KEY + '\n'
@@ -157,7 +157,7 @@ class TestProcess:
         # test_2
         input_key = 'テスト'
         monkeypatch.setattr('sys.stdin', StringIO(input_key))
-        Process.input_player_key()
+        Game.input_player_key()
         out, err = capfd.readouterr()
 
         assert out == Text.MES_CAN_NOT_USE_KEY + '\n'
@@ -166,7 +166,7 @@ class TestProcess:
         # test_3
         input_key = '◎'
         monkeypatch.setattr('sys.stdin', StringIO(input_key))
-        Process.input_player_key()
+        Game.input_player_key()
         out, err = capfd.readouterr()
 
         assert out == Text.MES_CAN_NOT_USE_KEY + '\n'
@@ -198,7 +198,7 @@ class TestProcess:
             + '\n'
 
         monkeypatch.setattr('sys.stdin', StringIO(''))
-        Process.show_player_status(player)
+        Game.show_player_status(player)
         out, err = capfd.readouterr()
 
         assert out == expect_string

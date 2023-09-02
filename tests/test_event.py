@@ -1,4 +1,4 @@
-from event import Event
+from utils.event import Event
 
 
 class TestEvent:

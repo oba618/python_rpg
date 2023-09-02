@@ -1,4 +1,4 @@
-from item import Color
+from src.item import Color
 
 
 class Text:

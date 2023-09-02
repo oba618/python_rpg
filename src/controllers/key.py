@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
-from const import (
+
+from src.utils.const import (
     ButtleAction,
     FieldAction,
     ItemListAction,
@@ -277,6 +278,21 @@ class InputKeyEnter(InputKey):
         pass
 
 
+input_key_def = {
+    Key.UP: InputKeyUp,
+    Key.DOWN: InputKeyDown,
+    Key.LEFT: InputKeyLeft,
+    Key.RIGHT: InputKeyRight,
+    Key.ESC: InputKeyEsc,
+    Key.ITEM: InputKeyItem,
+    Key.STATUS: InputKeyStatus,
+    Key.DECISION: InputKeyDecision,
+    Key.HELP: InputKeyHelp,
+    Key.EMPTY: InputKeyEmpty,
+    Key.ENTER: InputKeyEnter,
+}
+
+
 def get_input_key_obj(input_key: str) -> InputKey:
     """キーオブジェクト取得
 
@@ -287,22 +303,7 @@ def get_input_key_obj(input_key: str) -> InputKey:
         InputKey: キーオブジェクト
     """
 
-    # 定義
-    define = {
-        Key.UP: InputKeyUp,
-        Key.DOWN: InputKeyDown,
-        Key.LEFT: InputKeyLeft,
-        Key.RIGHT: InputKeyRight,
-        Key.ESC: InputKeyEsc,
-        Key.ITEM: InputKeyItem,
-        Key.STATUS: InputKeyStatus,
-        Key.DECISION: InputKeyDecision,
-        Key.HELP: InputKeyHelp,
-        Key.EMPTY: InputKeyEmpty,
-        Key.ENTER: InputKeyEnter,
-    }
-
     # オブジェクト取得
-    obj = define.get(input_key)
+    obj = input_key_def[input_key]
 
     return obj(input_key)
