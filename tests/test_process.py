@@ -11,7 +11,7 @@ class TestProcess:
         タイトrが表示されること
         """
         monkeypatch.setattr('sys.stdin', StringIO(''))
-        Game.show_title()
+        Game.output_title()
         out, err = capfd.readouterr()
 
         assert out == Text.TITLE + '\n'

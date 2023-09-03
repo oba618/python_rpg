@@ -47,24 +47,23 @@ class Player:
         self.level = self.DEFAULT_INITIAL_LEVEL
         self.item_list = self.DEFAULT_INITIAL_ITEM_LIST
         self.action_list = self.ACTION_LIST
-        self.select_index = 0
 
-    def get_item(self, field: str):
+    def get_item(self, item: str):
         """アイテム一覧にフィールドのアイテム(Itemインスタンス)を詰める
 
         Args:
-            field (str): フィールドのアイテム
+            item (str): フィールドのアイテム
         """
 
         # 剣の場合
-        if field == Item.WEAPON.value:
+        if item == Item.WEAPON.value:
             self.power += 30
 
         # 盾の場合
-        if field == Item.SIELD.value:
+        if item == Item.SIELD.value:
             self.defense += 10
 
-        item = Item(field)
+        item = Item(item)
 
         # アイテムを手に入れた！
         print(Text.MES_GET_ITEM.format(item.title))
@@ -73,12 +72,13 @@ class Player:
         # アイテム一覧に詰める
         self.item_list.append(item)
 
-    def show_item_list(self, select_index: int):
-        """アイテム一覧表示
+    def output_item_list(self, select_index: int):
+        """アイテム一覧を出力
 
         Args:
             select_index (int): 選択中インデックス
         """
+        Event.output_item_list(select_index, self.item_list)
 
         print(Text.ITEM_LIST_PREFIX)
 
@@ -96,14 +96,12 @@ class Player:
 
         # アイテムがない場合
         else:
-            print(Text.ITEM_LIST_NOTING)
-            print(Text.ITEM_LIST_SUFFIX)
-            Event.input()
+            Event.output_nothing_item()
 
         print(Text.ITEM_LIST_SUFFIX)
 
-    def show_action_list(self, select_index: int):
-        """アクションリストを表示
+    def output_action_list(self, select_index: int):
+        """アクションリストを出力
 
         Args:
             select_index (int): 選択中インデックス
@@ -119,7 +117,7 @@ class Player:
             else:
                 print(Text.ICON_NOT_SELECTED + action)
 
-    def show_status(self):
+    def output_status(self):
         """プレイヤーステータス表示
         """
         print(Text.PLAYER_STATUS.format(
@@ -130,7 +128,7 @@ class Player:
             self.max_mp
         ))
 
-    def show_status_detail(self):
+    def output_status_detail(self):
         """プレイヤー詳細ステータス表示
         """
 
@@ -241,8 +239,8 @@ class Player:
         monster.action_flg = True
         return Mode.BUTTLE
 
-    def win_buttle(self, monster):
-        """バトル勝利
+    def output_win_buttle(self, monster):
+        """バトル勝利を出力
 
         Args:
             monster (Monster): モンスター
@@ -260,12 +258,12 @@ class Player:
         if self.level**2 <= self.exp:
 
             # レベルアップ
-            self.level_up()
+            self.update_level()
 
             print(Text.MES_LEVEL_UP.format(self.name, self.level))
             Event.input()
 
-    def level_up(self):
+    def update_level(self):
         """レベルアップ
         """
         self.max_hp += self.ADD_MAX_HP

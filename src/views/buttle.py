@@ -44,7 +44,7 @@ class Buttle:
                 continue
 
             # アクションリスト表示
-            self.player.show_action_list(self.select_index)
+            self.player.output_action_list(self.select_index)
 
             # キー入力に対応したアクション
             self.action_in_buttle(
@@ -54,7 +54,7 @@ class Buttle:
             if self.is_dead(self.monster):
 
                 # プレイヤー勝利
-                self.player.win_buttle(self.monster)
+                self.player.output_win_buttle(self.monster)
 
                 # フィールドモードへ
                 self.mode = Mode.FIELD
@@ -184,8 +184,8 @@ class Buttle:
             print(Text.MES_HOW_TO_PLAY)
 
             # アイテム一覧表示
-            self.player.show_status()
-            self.player.show_item_list(self.select_index)
+            self.player.output_status()
+            self.player.output_item_list(self.select_index)
 
             # アイテムなしの場合
             if not self.player.item_list:
@@ -228,8 +228,8 @@ class Buttle:
         print(Text.MES_HOW_TO_PLAY)
 
         # 概要ステータスを表示
-        self.player.show_status()
-        self.player.show_status_detail()
+        self.player.output_status()
+        self.player.output_status_detail()
         Event.input()
 
         # バトルに戻る

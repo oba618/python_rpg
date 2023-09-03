@@ -22,14 +22,36 @@ class Event:
     def is_yes(cls, answer: str) -> bool:
         """"応答がYesであるか否か
         """
-        return True if answer in cls.YES_LIST else False
+        return answer in cls.YES_LIST
 
     @classmethod
     def confirm(cls) -> bool:
         """確認
         """
         answer = input(Text.MES_CONFIRMATION)
-        return True if answer in cls.YES_LIST else False
+        return answer in cls.YES_LIST
+
+    @classmethod
+    def select_game_level(cls) -> str:
+        """ゲームレベル選択
+
+        Returns:
+            str: ゲームレベル
+        """
+        game_level = ''
+        while not game_level:
+            Event.clear()
+            print(Text.STRING_DECORATION)
+            print(Text.MES_SELECT_GAME_LEVEL)
+            game_level = cls.input()
+
+            if game_level in ['1', '2', '3']:
+                game_level = cls.confirm_input(game_level)
+
+            else:
+                game_level = ''
+
+        return game_level
 
     @staticmethod
     def input():
@@ -55,25 +77,6 @@ class Event:
             # 不正な入力の場合
             else:
                 print(Text.MES_CAN_NOT_USE_KEY)
-
-    @classmethod
-    def show_title(cls):
-        """タイトルを表示
-        """
-        cls.clear()
-        print(Text.TITLE)
-        cls.input()
-
-    @classmethod
-    def show_prologue(cls, player_name):
-        """プロローグを表示
-
-        Args:
-            player_name (str): プレイヤー名
-        """
-        cls.clear()
-        print(Text.MES_GAME_MISSION.format(player_name))
-        cls.input()
 
     @classmethod
     def input_player_name(cls) -> str:
@@ -106,28 +109,6 @@ class Event:
         return player_name
 
     @classmethod
-    def select_game_level(cls) -> str:
-        """ゲームレベル選択
-
-        Returns:
-            str: ゲームレベル
-        """
-        game_level = ''
-        while not game_level:
-            Event.clear()
-            print(Text.STRING_DECORATION)
-            print(Text.MES_SELECT_GAME_LEVEL)
-            game_level = cls.input()
-
-            if game_level in ['1', '2', '3']:
-                game_level = cls.confirm_input(game_level)
-
-            else:
-                game_level = ''
-
-        return game_level
-
-    @classmethod
     def confirm_input(cls, item: str) -> str:
         """応答がYesかNoを確認
 
@@ -143,3 +124,30 @@ class Event:
             return item
         else:
             return ''
+
+    @classmethod
+    def output_title(cls):
+        """タイトルを出力
+        """
+        cls.clear()
+        print(Text.TITLE)
+        cls.input()
+
+    @classmethod
+    def output_opening_message(cls, player_name):
+        """プロローグを出力
+
+        Args:
+            player_name (str): プレイヤー名
+        """
+        cls.clear()
+        print(Text.MES_GAME_MISSION.format(player_name))
+        cls.input()
+
+    @classmethod
+    def output_nothing_item(cls):
+        """アイテムが存在しないことを出力
+        """
+        print(Text.ITEM_LIST_NOTING)
+        print(Text.ITEM_LIST_SUFFIX)
+        cls.input()

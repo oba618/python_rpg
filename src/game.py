@@ -33,7 +33,7 @@ class Game:
         """
 
         # タイトルの表示
-        Event.show_title()
+        Event.output_title()
 
         # プレイヤー作成
         self.player = Player(Event.input_player_name())
@@ -42,7 +42,7 @@ class Game:
         self.map = Map(Event.select_game_level())
 
         # プロローグ
-        Event.show_prologue(self.player.name)
+        Event.output_opening_message(self.player.name)
 
         # フィールドモードへ
         self.mode_key = Mode.FIELD
@@ -52,7 +52,7 @@ class Game:
         """
 
         # マップ表示
-        self.map.show()
+        self.map.output()
 
         # キー入力に対応した処理
         self.action_in_field(
@@ -84,8 +84,8 @@ class Game:
             print(Text.MES_HOW_TO_PLAY)
 
             # アイテム一覧表示
-            self.player.show_status()
-            self.player.show_item_list(self.select_index)
+            self.player.output_status()
+            self.player.output_item_list(self.select_index)
 
             # アイテムなし
             if not self.player.item_list:
@@ -127,7 +127,7 @@ class Game:
 
         # アイテム一覧を表示
         if self.player.item_list:
-            self.player.show_item_list(self.select_index)
+            self.player.output_item_list(self.select_index)
 
         # アイテムがない場合
         else:
@@ -204,8 +204,8 @@ class Game:
         print(Text.MES_HOW_TO_PLAY)
 
         # ステータスを表示
-        self.player.show_status()
-        self.player.show_status_detail()
+        self.player.output_status()
+        self.player.output_status_detail()
         Event.input()
 
         # フィールドモードへ
@@ -238,7 +238,7 @@ class Game:
 
         # 戻る
         else:
-            self.mode = Mode.FIELD
+            self.mode_key = Mode.FIELD
 
     def mode_game_over(self):
         """ゲームオーバーモード

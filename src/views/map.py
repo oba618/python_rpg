@@ -30,8 +30,8 @@ class Map:
 
         return field_map
 
-    def show(self):
-        """マップを表示
+    def output(self):
+        """マップを出力
         """
         Event.clear()
         print(Text.MES_HOW_TO_PLAY)
