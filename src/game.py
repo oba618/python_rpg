@@ -54,24 +54,47 @@ class Game:
         # マップ表示
         self.map.output()
 
-        # キー入力に対応した処理
-        self.action_in_field(
-            InputKeyServer.get_input_key_obj(Event.input_character()))
+        key_obj = InputKeyServer.get_input_key_obj(Event.input_character())
 
-    def action_in_field(self, key_obj: InputKey):
-        """フィールドでのアクション
+        # モード変更用
+        next_mode_key = None
 
-        Args:
-            key_obj (InputKey): キーオブジェクト
-        """
-
-        # 動く
+        # プレイヤーが動く場合
         if key_obj.field_action == FieldAction.MOVE:
-            self.move_map(key_obj.move_map())
+            height, width = key_obj.move_map()
 
-        # 画面遷移
+            field_item = self.map.get_next_field_item(height, width)
+
+            # プリエヤーが移動できる場合
+            if self.map.can_move_player(field_item):
+                self.map.change_field(height, width)
+
+            else:
+                print(Text.MES_CAN_NOT_MOVE)
+                Event.input()
+
+            # ゴール
+            if field_item == Item.GOAL.value:
+                next_mode_key = Mode.GAME_CLEAR
+
+            # プレイヤーがアイテム取得できる場合
+            if self.map.is_item(field_item):
+                self.player.append_item(field_item)
+
+            self.counter += 1
+
+            # エンカウント判定
+            if self.is_encount_monster():
+                next_mode_key = Mode.BUTTLE
+
+
+        # 他の画面に切り替える場合
         if key_obj.field_action == FieldAction.CHANGE:
-            self.mode_key = key_obj.change_display()
+            next_mode_key = key_obj.change_display()
+
+        # モードを変更する場合
+        if next_mode_key:
+            self.mode_key = next_mode_key
 
     def mode_item_list(self):
         """アイテム一覧モード
@@ -140,36 +163,13 @@ class Game:
 
         print(Text.ITEM_LIST_SUFFIX)
 
-    def move_map(self, point: list):
-        """フィールドマップを移動する
-
-        Args:
-            point (list): 座標(0: height, 1: width)
-        """
-
-        # マップを移動
-        item = self.map.move(point[0], point[1])
-
-        # ゴール
-        if item == Item.GOAL.value:
-            self.mode_key = Mode.GAME_CLEAR
-            return
-
-        # アイテム取得
-        if item:
-            self.player.get_item(item)
-
-        # エンカウント判定
-        self.check_encount()
-
-    def check_encount(self):
+    def is_encount_monster(self) -> bool:
         """モンスターと戦闘するか否か
-        """
-        self.counter += 1
 
-        # バトルモードへ
-        if int(random() * 100) % 20 == 0 or self.counter % 50 == 0:
-            self.mode_key = Mode.BUTTLE
+        Returns:
+            bool: モンスターと戦闘するか否か
+        """
+        return int(random() * 100) % 20 == 0 or self.counter % 50 == 0
 
     def mode_buttle(self):
         """バトルモード

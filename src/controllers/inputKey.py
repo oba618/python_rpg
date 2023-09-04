@@ -19,11 +19,11 @@ class InputKey(ABC):
         self.buttle_action = ButtleAction.NOTHING
 
     @abstractmethod
-    def move_map(self) -> list:
+    def move_map(self) -> tuple:
         """マップのプレイヤーを移動させる
 
         Returns:
-            list: _description_
+            tuple: (座標高, 座標幅)
         """
         pass
 
@@ -54,7 +54,7 @@ class InputKeyUp(InputKey):
         self.buttle_action = ButtleAction.MOVE
 
     def move_map(self):
-        return [-1, 0]
+        return (-1, 0)
 
     def move_cursor(self, list_len, select_index):
         return select_index - 1 \
@@ -73,7 +73,7 @@ class InputKeyDown(InputKey):
         self.buttle_action = ButtleAction.MOVE
 
     def move_map(self):
-        return [1, 0]
+        return (1, 0)
 
     def move_cursor(self, list_len, select_index):
         return select_index + 1 \
@@ -92,7 +92,7 @@ class InputKeyLeft(InputKey):
         self.buttle_action = ButtleAction.NOTHING
 
     def move_map(self):
-        return [0, -1]
+        return (0, -1)
 
     def move_cursor(self):
         pass
@@ -109,7 +109,7 @@ class InputKeyRight(InputKey):
         self.buttle_action = ButtleAction.NOTHING
 
     def move_map(self):
-        return [0, 1]
+        return (0, 1)
 
     def move_cursor(self):
         pass

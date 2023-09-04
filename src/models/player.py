@@ -48,7 +48,7 @@ class Player:
         self.item_list = self.DEFAULT_INITIAL_ITEM_LIST
         self.action_list = self.ACTION_LIST
 
-    def get_item(self, item: str):
+    def append_item(self, item: str):
         """アイテム一覧にフィールドのアイテム(Itemインスタンス)を詰める
 
         Args:
@@ -78,8 +78,6 @@ class Player:
         Args:
             select_index (int): 選択中インデックス
         """
-        Event.output_item_list(select_index, self.item_list)
-
         print(Text.ITEM_LIST_PREFIX)
 
         # アイテム一覧表示
