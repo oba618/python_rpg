@@ -47,6 +47,7 @@ class Player:
         self.level = self.DEFAULT_INITIAL_LEVEL
         self.item_list = self.DEFAULT_INITIAL_ITEM_LIST
         self.action_list = self.ACTION_LIST
+        self.select_index = None
 
     def append_item(self, item: str):
         """アイテム一覧にフィールドのアイテム(Itemインスタンス)を詰める
@@ -72,11 +73,8 @@ class Player:
         # アイテム一覧に詰める
         self.item_list.append(item)
 
-    def output_item_list(self, select_index: int):
+    def output_item_list(self):
         """アイテム一覧を出力
-
-        Args:
-            select_index (int): 選択中インデックス
         """
         print(Text.ITEM_LIST_PREFIX)
 
@@ -87,7 +85,7 @@ class Player:
             self.item_list.sort()
 
             for index, item in enumerate(self.item_list):
-                if select_index == index:
+                if self.select_index == index:
                     print(Text.ICON_SELECTED + item.title)
                 else:
                     print(Text.ICON_NOT_SELECTED + item.title)
@@ -98,11 +96,8 @@ class Player:
 
         print(Text.ITEM_LIST_SUFFIX)
 
-    def output_action_list(self, select_index: int):
+    def output_action_list(self):
         """アクションリストを出力
-
-        Args:
-            select_index (int): 選択中インデックス
         """
         print(Text.MES_CHOOSE_ACTION)
 
@@ -110,7 +105,7 @@ class Player:
         for index, action in enumerate(self.ACTION_LIST):
 
             # 選択中のアクションに’※’を表示
-            if select_index == index:
+            if self.select_index == index:
                 print(Text.ICON_SELECTED + action)
             else:
                 print(Text.ICON_NOT_SELECTED + action)
@@ -142,25 +137,24 @@ class Player:
             self.defense,
         ))
 
-    def use_item(self, select_index):
+    def use_item(self):
         """アイテム使用
         """
 
         # アイテム一覧からアイテムを取り出す
-        item_object = self.item_list[select_index]
+        item_object = self.item_list[self.select_index]
 
         # アイテムの説明を表示、使用確認
         print(Text.USE_ITEM_CONFIRM.format(item_object.description))
 
-        self._use_item(item_object, input(), select_index)
+        self._use_item(item_object, input())
 
-    def _use_item(self, item_object, answer, select_index):
+    def _use_item(self, item_object, answer):
         """アイテム使用
 
         Args:
             item_object (Item): 使用するアイテム
             answer (str): 入力された文字列
-            select_index (int): 選択中インデックス
         """
 
         # アイテム使用
@@ -175,7 +169,7 @@ class Player:
                     self.hp = self.max_hp
 
                 # リストからアイテムを削除
-                del self.item_list[select_index]
+                del self.item_list[self.select_index]
 
                 print(Text.MES_USE_HERB.format(item_object.recovery))
                 Event.input()
@@ -185,12 +179,12 @@ class Player:
                 print(Text.MES_USE_EQUIPMENT)
                 Event.input()
 
-    def action_in_buttle(self, select_index, monster) -> Mode:
+    def action_in_buttle(self, monster) -> Mode:
         """バトルでのアクション
         """
 
         # こうげきの場合
-        if select_index == self.action_list.index(self.ATTACK):
+        if self.select_index == self.action_list.index(self.ATTACK):
 
             # プレイヤーの攻撃
             input(Text.MES_ATTACK_FROM_PLAYER.format(self.name))
@@ -201,7 +195,7 @@ class Player:
             monster.hp -= damage
 
         # まほうの場合
-        if select_index == self.action_list.index(self.MAGIC):
+        if self.select_index == self.action_list.index(self.MAGIC):
             input(Text.MES_MAGIC.format(self.name))
 
             # MP確認
@@ -217,11 +211,11 @@ class Player:
                 input(Text.MES_MP_IS_EMPTY)
 
         # アイテムの場合
-        if select_index == self.action_list.index(self.ITEM):
+        if self.select_index == self.action_list.index(self.ITEM):
             return Mode.ITEM_LIST
 
         # にげるの場合
-        if select_index == self.action_list.index(self.ESCAPE):
+        if self.select_index == self.action_list.index(self.ESCAPE):
 
             # にげる判定
             escape = randint(1, 100)

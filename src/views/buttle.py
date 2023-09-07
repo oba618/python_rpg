@@ -1,3 +1,4 @@
+from random import random
 import sys
 
 from src.controllers.inputKey import InputKey
@@ -15,20 +16,16 @@ from src.views.text import Text
 
 class Buttle:
     """バトル画面に遷移するイメージのクラス
-
-    Args:
-        player (Player): プレイヤー
-        monster (Monster): モンスター
     """
 
-    def __init__(self, player: Player, monster: Monster):
-        self.player = player
-        self.monster = monster
-        self.appear_flg = True
-        self.monster_action_flg = False
-        self.select_index = 0
-        self.mode = Mode.BUTTLE
-        self.buttle_flg = True
+    def __init__(self):
+        self.player = None
+        self.monster = None
+        self.appear_flg = None
+        self.monster_action_flg = None
+        self.mode = None
+        self.buttle_flg = None
+        self.counter = 0
 
     def mode_buttle(self):
         """バトルモード
@@ -37,14 +34,10 @@ class Buttle:
         while self.mode == Mode.BUTTLE:
 
             # 画面表示
-            self.show_display()
-
-            if self.monster.appear_flg:
-                self.monster.appear_flg = False
-                continue
+            self.output()
 
             # アクションリスト表示
-            self.player.output_action_list(self.select_index)
+            self.player.output_action_list()
 
             # キー入力に対応したアクション
             self.action_in_buttle(
@@ -82,15 +75,14 @@ class Buttle:
 
         # カーソル動く
         if key_obj.buttle_action == ButtleAction.MOVE:
-            self.select_index = key_obj.move_cursor(
+            self.player.select_index = key_obj.move_cursor(
                 len(self.player.action_list),
-                self.select_index,
+                self.player.select_index,
             )
 
         # 決定
         if key_obj.buttle_action == ButtleAction.DECISION:
             self.mode = self.player.action_in_buttle(
-                self.select_index,
                 self.monster,
             )
 
@@ -109,19 +101,20 @@ class Buttle:
         """
         return target.hp <= 0
 
-    def show_display(self):
+    def output(self):
         """ディスプレイ表示
         """
 
         # 上部表示
         Event.clear()
-        self.show_display_top()
+        self.output_top()
 
         # モンスター登場
         if self.monster.appear_flg:
             self.monster.appear()
+            self.monster.appear_flg = False
 
-    def show_display_top(self):
+    def output_top(self):
         """ディスプレイ上部表示
         """
 
@@ -157,7 +150,7 @@ class Buttle:
             for index, item in enumerate(item_list):
 
                 # 選択中のアイテムの場合は'[※]'を表示する
-                if index == self.select_index:
+                if index == self.player.select_index:
                     print(Text.ICON_SELECTED + item.title)
                 else:
                     print(Text.ICON_NOT_SELECTED + item.title)
@@ -171,12 +164,22 @@ class Buttle:
 
         print(Text.ITEM_LIST_SUFFIX)
 
+    def is_encount_monster(self) -> bool:
+        """モンスターと戦闘するか否か
+
+        Returns:
+            bool: モンスターと戦闘するか否か
+        """
+        self.counter += 1
+
+        return int(random() * 100) % 20 == 0 or self.counter % 50 == 0
+
     def mode_item_list(self):
         """アイテム一覧を表示するループ
         """
 
         # インデックス初期化
-        self.select_index = 0
+        self.player.select_index = 0
 
         while self.mode == Mode.ITEM_LIST:
 
@@ -185,7 +188,7 @@ class Buttle:
 
             # アイテム一覧表示
             self.player.output_status()
-            self.player.output_item_list(self.select_index)
+            self.player.output_item_list()
 
             # アイテムなしの場合
             if not self.player.item_list:
@@ -205,20 +208,20 @@ class Buttle:
 
         # カーソル移動
         if key_obj.item_list_action == ItemListAction.MOVE:
-            self.select_index = key_obj.move_cursor(
+            self.player.select_index = key_obj.move_cursor(
                 len(self.player.item_list),
-                self.select_index,
+                self.player.select_index,
             )
 
         # アイテム使用
         if key_obj.item_list_action == ItemListAction.DECISION:
-            self.player.use_item(self.select_index)
-            self.select_index = 0
+            self.player.use_item()
+            self.player.select_index = 0
 
         # バトルに戻る
         if key_obj.item_list_action == ItemListAction.ESCAPE:
             self.mode = Mode.BUTTLE
-            self.select_index = 0
+            self.player.select_index = 0
 
     def mode_status(self):
         """プレイヤーのステータス詳細を表示
@@ -250,7 +253,7 @@ class Buttle:
         """エスケープモード
         """
 
-        self.show_display()
+        self.output()
         print(Text.STRING_DECORATION)
 
         # 確認
@@ -269,29 +272,40 @@ class Buttle:
         """
         self.buttle_flg = False
 
-    def start(self) -> Mode:
+    def start(self, player: Player, monster: Monster) -> Mode:
         """バトルスタート
+
+        Args:
+            player (Player): プレイヤー
+            monster (Monster): モンスター
 
         Returns:
             Mode: モード
         """
+        self.buttle_flg = True
+        self.mode = Mode.BUTTLE
+        self.appear_flg = True
+        self.monster_action_flg = False
+
+        self.player = player
+        self.monster = monster
+
+        # モード定義
+        mode_def = {
+            Mode.FIELD: self.mode_field,
+            Mode.BUTTLE: self.mode_buttle,
+            Mode.ITEM_LIST: self.mode_item_list,
+            Mode.ESCAPE: self.mode_game_escape,
+            Mode.STATUS: self.mode_status,
+            Mode.HELP: self.mode_help,
+        }
 
         while self.buttle_flg:
 
-            # モード定義
-            define = {
-                Mode.FIELD: self.mode_field,
-                Mode.BUTTLE: self.mode_buttle,
-                Mode.ITEM_LIST: self.mode_item_list,
-                Mode.ESCAPE: self.mode_game_escape,
-                Mode.STATUS: self.mode_status,
-                Mode.HELP: self.mode_help,
-            }
-
             # モード選択
-            method = define.get(self.mode)
+            mode = mode_def.get(self.mode)
 
             # モード実行
-            method()
+            mode()
 
         return self.mode

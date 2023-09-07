@@ -1,5 +1,3 @@
-from random import random
-
 from src.controllers.inputKey import InputKey
 from src.controllers.inputKeyServer import InputKeyServer
 from src.item import Item
@@ -23,9 +21,8 @@ class Game:
     def __init__(self):
         self.player = None
         self.map = None
+        self.buttle = None
         self.game_flg = None
-        self.counter = None
-        self.select_index = None
         self.mode_key = None
 
     def mode_start(self):
@@ -81,10 +78,8 @@ class Game:
             if self.map.is_item(field_item):
                 self.player.append_item(field_item)
 
-            self.counter += 1
-
             # エンカウント判定
-            if self.is_encount_monster():
+            if self.buttle.is_encount_monster():
                 next_mode_key = Mode.BUTTLE
 
 
@@ -99,7 +94,7 @@ class Game:
     def mode_item_list(self):
         """アイテム一覧モード
         """
-        self.select_index = 0
+        self.player.select_index = 0
 
         while self.mode_key == Mode.ITEM_LIST:
 
@@ -108,7 +103,7 @@ class Game:
 
             # アイテム一覧表示
             self.player.output_status()
-            self.player.output_item_list(self.select_index)
+            self.player.output_item_list()
 
             # アイテムなし
             if not self.player.item_list:
@@ -128,74 +123,29 @@ class Game:
 
         # カーソル移動
         if key_obj.item_list_action == ItemListAction.MOVE:
-            self.select_index = key_obj.move_cursor(
+            self.player.select_index = key_obj.move_cursor(
                 len(self.player.item_list),
-                self.select_index,
+                self.player.select_index,
             )
 
         # アイテム使用
         if key_obj.item_list_action == ItemListAction.DECISION:
-            self.player.use_item(self.select_index)
-            self.select_index = 0
+            self.player.use_item()
+            self.player.select_index = 0
 
         # フィールドモードへ
         if key_obj.item_list_action == ItemListAction.ESCAPE:
             self.mode_key = Mode.FIELD
-
-    def _show_item_list(self):
-        """アイテム一覧を表示
-        """
-
-        print(Text.ITEM_LIST_PREFIX)
-
-        # アイテム一覧を表示
-        if self.player.item_list:
-            self.player.output_item_list(self.select_index)
-
-        # アイテムがない場合
-        else:
-            print(Text.ITEM_LIST_NOTING)
-            print(Text.ITEM_LIST_SUFFIX)
-            Event.input()
-
-            # フィールドモードへ
-            self.mode_key = Mode.FIELD
-
-        print(Text.ITEM_LIST_SUFFIX)
-
-    def is_encount_monster(self) -> bool:
-        """モンスターと戦闘するか否か
-
-        Returns:
-            bool: モンスターと戦闘するか否か
-        """
-        return int(random() * 100) % 20 == 0 or self.counter % 50 == 0
 
     def mode_buttle(self):
         """バトルモード
         """
 
         # モンスター作成
-        monster = Monster(self.counter)
-
-        # バトルクラスへ
-        buttle = Buttle(self.player, monster)
+        monster = Monster(self.buttle.counter)
 
         # バトル
-        self.mode_key = buttle.start()
-
-    def use_item(self):
-        """アイテム使用
-        """
-
-        # アイテム一覧からアイテムを取り出す
-        item_object = self.player.item_list[self.select_index]
-
-        # アイテムの説明を表示、使用確認
-        print(Text.USE_ITEM_CONFIRM.format(item_object.description))
-
-        # アイテム使用
-        self.use_item(item_object, Event.input())
+        self.mode_key = self.buttle.start(self.player, monster)
 
     def mode_status(self):
         """プレイヤーのステータス詳細を表示
@@ -263,9 +213,8 @@ class Game:
     def start(self):
         """メインループ
         """
+        self.buttle = Buttle()
         self.game_flg = True
-        self.counter = 0
-        self.select_index = 0
         self.mode_key = Mode.START
 
         # モード定義
