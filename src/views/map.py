@@ -1,7 +1,7 @@
-from event import Event
-from item import Item
-from field import Field
-from text import Text
+from src.utils.event import Event
+from src.item import Item
+from src.views.field import Field
+from src.views.text import Text
 
 
 class Map:
@@ -30,8 +30,8 @@ class Map:
 
         return field_map
 
-    def show(self):
-        """マップを表示
+    def output(self):
+        """マップを出力
         """
         Event.clear()
         print(Text.MES_HOW_TO_PLAY)
@@ -43,40 +43,51 @@ class Map:
                 map = map + Item(string).map_item
             print(map)
 
-    def move(self, height: int, width: int) -> str:
-        """マップを移動
+    def get_next_field_item(self, height: int, width: int) -> str:
+        """プレイヤーの移動先のアイテムを取得
 
         Args:
             height (int): 座標高
             width (int): 座標幅
+
+        Returns:
+            str: アイテム
         """
         next_height = self.now_h + height
         next_width = self.now_w + width
 
         # 画面端の場合
-        if self.is_out_of_range(next_height, next_width):
-            next_field = self.scroll_map(height, width)
+        return self.scroll_map(height, width) \
+            if self.is_out_of_range(next_height, next_width) \
+            else self.map_list[next_height][next_width]
 
-        else:
-            next_field \
-                = self.map_list[next_height][next_width]
+    def can_move_player(self, field_item: str) -> bool:
+        """プレイヤーを動かせるか否か
 
-            # マップ更新
-            if not next_field == Item.BLOCK.value:
-                self.change_field(height, width)
+        Args:
+            field_item (str): フィールドのアイテム
 
-            # 壁の場合
-            if next_field == Item.BLOCK.value:
-                print(Text.MES_CAN_NOT_MOVE)
-                Event.input()
-                return
+        Returns:
+            bool: プレイヤーを動かせるか否か
+        """
+        return field_item != Item.BLOCK.value
 
-            # 空地の場合
-            if next_field == Item.EMPTY.value:
-                return
+    def is_item(self, field_item: str) -> bool:
+        """アイテムか否か
 
-        # 移動先が、アイテムの場合
-        return next_field
+        Args:
+            field_name (str): アイテム
+
+        Returns:
+            bool: アイテムか否か
+        """
+        return (
+            field_item == Item.WEAPON.value or
+            field_item == Item.SIELD.value or
+            field_item == Item.HERBS.value or
+            field_item == Item.POTION.value or
+            field_item == Item.ELIXIR.value
+        )
 
     def change_field(self, height: int, width: int):
         """現在位置を空地へ
@@ -107,7 +118,7 @@ class Map:
             and 0 <= width < len(self.map_list[0])
         )
 
-    def scroll_map(self, height: int, width: int) -> tuple:
+    def scroll_map(self, height: int, width: int) -> str:
 
         # スクロール先
         next_field_number = self.field_number + (height * 10 + width)
@@ -129,11 +140,11 @@ class Map:
         if next_field == Item.BLOCK.value:
             print(Text.MES_CAN_NOT_MOVE)
             Event.input()
-            return
+            return ''
 
         # 空地の場合
         if next_field == Item.EMPTY.value:
-            return
+            return ''
 
         return next_field
 

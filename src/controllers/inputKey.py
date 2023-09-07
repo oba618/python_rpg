@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
-from const import (
+
+from src.utils.const import (
     ButtleAction,
     FieldAction,
     ItemListAction,
@@ -7,82 +8,53 @@ from const import (
 )
 
 
-"""
-キー入力に応じた十字キークラス群
-十字キー -> 上下左右の入力を受け付けるキー
-
-基底クラス: InputKey
-
-サーバクラス: InputKeyServer -> キー入力に応じたInputKeyクラスを呼び出す
-
-メソッド:
-    move_map() -> 移動させる
-    move_cursor() -> カーソルを移動させる
-"""
-
-
-class Key:
-
-    # キー名
-    UP = 'w'
-    DOWN = 's'
-    LEFT = 'a'
-    RIGHT = 'd'
-    ESC = 'q'
-    ITEM = 'e'
-    STATUS = 'z'
-    DECISION = 'x'
-    HELP = 'c'
-    EMPTY = ''
-    KEY_LIST = {
-        UP: ['w', 'W', 'ｗ', 'Ｗ'],
-        DOWN: ['s', 'S', 'ｓ', 'Ｓ'],
-        LEFT: ['a', 'A', 'あ', 'Ａ'],
-        RIGHT: ['d', 'D', 'ｄ', 'Ｄ'],
-        ESC: ['q', 'Q', 'ｑ', 'Ｑ'],
-        ITEM: ['e', 'E', 'え', 'Ｅ'],
-        STATUS: ['z', 'Z', 'ｚ', 'Ｚ'],
-        DECISION: ['x', 'X', 'ｘ', 'Ｘ'],
-        HELP: ['c', 'C', 'ｃ', 'Ｃ'],
-        EMPTY: ['', ' ', '　'],
-    }
-    MOVE_KEY_LIST = [
-        UP, DOWN, LEFT, RIGHT,
-    ]
-
-
 class InputKey(ABC):
+    """入力キー抽象クラス
+    """
 
     @abstractmethod
-    def __init__(self, value):
-        self.value = value
+    def __init__(self):
         self.field_action = FieldAction.NOTHING
         self.item_list_action = ItemListAction.NOTHING
         self.buttle_action = ButtleAction.NOTHING
 
     @abstractmethod
-    def move_map(self) -> list:
+    def move_map(self) -> tuple:
+        """マップのプレイヤーを移動させる
+
+        Returns:
+            tuple: (座標高, 座標幅)
+        """
         pass
 
     @abstractmethod
     def move_cursor(self) -> int:
+        """カーソルを移動させる
+
+        Returns:
+            int: _description_
+        """
         pass
 
     @abstractmethod
     def change_display(self) -> Mode:
+        """モードを変更させる
+
+        Returns:
+            Mode: モード
+        """
         pass
 
 
 class InputKeyUp(InputKey):
 
-    def __init__(self, value):
-        self.value = value
+    def __init__(self):
         self.field_action = FieldAction.MOVE
         self.item_list_action = ItemListAction.MOVE
         self.buttle_action = ButtleAction.MOVE
 
     def move_map(self):
-        return [-1, 0]
+        return (-1, 0)
 
     def move_cursor(self, list_len, select_index):
         return select_index - 1 \
@@ -95,14 +67,13 @@ class InputKeyUp(InputKey):
 
 class InputKeyDown(InputKey):
 
-    def __init__(self, value):
-        self.value = value
+    def __init__(self):
         self.field_action = FieldAction.MOVE
         self.item_list_action = ItemListAction.MOVE
         self.buttle_action = ButtleAction.MOVE
 
     def move_map(self):
-        return [1, 0]
+        return (1, 0)
 
     def move_cursor(self, list_len, select_index):
         return select_index + 1 \
@@ -115,14 +86,13 @@ class InputKeyDown(InputKey):
 
 class InputKeyLeft(InputKey):
 
-    def __init__(self, value):
-        self.value = value
+    def __init__(self):
         self.field_action = FieldAction.MOVE
         self.item_list_action = ItemListAction.ESCAPE
         self.buttle_action = ButtleAction.NOTHING
 
     def move_map(self):
-        return [0, -1]
+        return (0, -1)
 
     def move_cursor(self):
         pass
@@ -133,14 +103,13 @@ class InputKeyLeft(InputKey):
 
 class InputKeyRight(InputKey):
 
-    def __init__(self, value):
-        self.value = value
+    def __init__(self):
         self.field_action = FieldAction.MOVE
         self.item_list_action = ItemListAction.ESCAPE
         self.buttle_action = ButtleAction.NOTHING
 
     def move_map(self):
-        return [0, 1]
+        return (0, 1)
 
     def move_cursor(self):
         pass
@@ -151,8 +120,7 @@ class InputKeyRight(InputKey):
 
 class InputKeyEsc(InputKey):
 
-    def __init__(self, value):
-        self.value = value
+    def __init__(self):
         self.field_action = FieldAction.CHANGE
         self.item_list_action = ItemListAction.ESCAPE
         self.buttle_action = ButtleAction.CHANGE
@@ -169,8 +137,7 @@ class InputKeyEsc(InputKey):
 
 class InputKeyItem(InputKey):
 
-    def __init__(self, value):
-        self.value = value
+    def __init__(self):
         self.field_action = FieldAction.CHANGE
         self.item_list_action = ItemListAction.ESCAPE
         self.buttle_action = ButtleAction.CHANGE
@@ -187,8 +154,7 @@ class InputKeyItem(InputKey):
 
 class InputKeyStatus(InputKey):
 
-    def __init__(self, value):
-        self.value = value
+    def __init__(self):
         self.field_action = FieldAction.CHANGE
         self.item_list_action = ItemListAction.ESCAPE
         self.buttle_action = ButtleAction.CHANGE
@@ -205,8 +171,7 @@ class InputKeyStatus(InputKey):
 
 class InputKeyDecision(InputKey):
 
-    def __init__(self, value):
-        self.value = value
+    def __init__(self):
         self.field_action = FieldAction.NOTHING
         self.item_list_action = ItemListAction.DECISION
         self.buttle_action = ButtleAction.DECISION
@@ -223,8 +188,7 @@ class InputKeyDecision(InputKey):
 
 class InputKeyHelp(InputKey):
 
-    def __init__(self, value):
-        self.value = value
+    def __init__(self):
         self.field_action = FieldAction.CHANGE
         self.item_list_action = ItemListAction.ESCAPE
         self.buttle_action = ButtleAction.CHANGE
@@ -241,8 +205,7 @@ class InputKeyHelp(InputKey):
 
 class InputKeyEmpty(InputKey):
 
-    def __init__(self, value):
-        self.value = value
+    def __init__(self):
         self.field_action = FieldAction.NOTHING
         self.item_list_action = ItemListAction.DECISION
         self.buttle_action = ButtleAction.DECISION
@@ -257,31 +220,18 @@ class InputKeyEmpty(InputKey):
         pass
 
 
-def get_input_key_obj(input_key: str) -> InputKey:
-    """キーオブジェクト取得
+class InputKeyEnter(InputKey):
 
-    Args:
-        input_key (str): 標準入力されたキー
+    def __init__(self):
+        self.field_action = FieldAction.NOTHING
+        self.item_list_action = ItemListAction.DECISION
+        self.buttle_action = ButtleAction.DECISION
 
-    Returns:
-        InputKey: キーオブジェクト
-    """
+    def move_map(self):
+        pass
 
-    # 定義
-    define = {
-        Key.UP: InputKeyUp,
-        Key.DOWN: InputKeyDown,
-        Key.LEFT: InputKeyLeft,
-        Key.RIGHT: InputKeyRight,
-        Key.ESC: InputKeyEsc,
-        Key.ITEM: InputKeyItem,
-        Key.STATUS: InputKeyStatus,
-        Key.DECISION: InputKeyDecision,
-        Key.HELP: InputKeyHelp,
-        Key.EMPTY: InputKeyEmpty,
-    }
+    def move_cursor(self):
+        pass
 
-    # オブジェクト取得
-    obj = define.get(input_key)
-
-    return obj(input_key)
+    def change_display(self):
+        pass

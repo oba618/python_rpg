@@ -1,7 +1,7 @@
 from io import StringIO
 
-from map import MapItem
-from player import Player
+from views.map import MapItem
+from models.player import Player
 
 
 class TestPlayer:
