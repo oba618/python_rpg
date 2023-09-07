@@ -1,11 +1,9 @@
-from src.controllers.inputKey import InputKey
 from src.controllers.inputKeyServer import InputKeyServer
 from src.item import Item
 from src.models.player import Player
 from src.models.monster import Monster
 from src.utils.const import (
     FieldAction,
-    ItemListAction,
     Mode,
 )
 from src.utils.event import Event
@@ -94,48 +92,8 @@ class Game:
     def mode_item_list(self):
         """アイテム一覧モード
         """
-        self.player.select_index = 0
-
-        while self.mode_key == Mode.ITEM_LIST:
-
-            Event.clear()
-            print(Text.MES_HOW_TO_PLAY)
-
-            # アイテム一覧表示
-            self.player.output_status()
-            self.player.output_item_list()
-
-            # アイテムなし
-            if not self.player.item_list:
-                self.mode_key = Mode.FIELD
-                return
-
-            # キー入力に応じた処理
-            self.action_in_item_list(
-                InputKeyServer.get_input_key_obj(Event.input_character()))
-
-    def action_in_item_list(self, key_obj: InputKey):
-        """アイテム一覧でのアクション
-
-        Args:
-            key_obj (InputKey): アクションキー
-        """
-
-        # カーソル移動
-        if key_obj.item_list_action == ItemListAction.MOVE:
-            self.player.select_index = key_obj.move_cursor(
-                len(self.player.item_list),
-                self.player.select_index,
-            )
-
-        # アイテム使用
-        if key_obj.item_list_action == ItemListAction.DECISION:
-            self.player.use_item()
-            self.player.select_index = 0
-
-        # フィールドモードへ
-        if key_obj.item_list_action == ItemListAction.ESCAPE:
-            self.mode_key = Mode.FIELD
+        self.player.open_item_list()
+        self.mode_key = Mode.FIELD
 
     def mode_buttle(self):
         """バトルモード

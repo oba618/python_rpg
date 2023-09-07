@@ -1,9 +1,14 @@
 from random import randint
 
+from src.controllers.inputKey import InputKey
+from src.controllers.inputKeyServer import InputKeyServer
 from src.item import Item
-from src.utils.const import Mode
-from src.views.text import Text
+from src.utils.const import (
+    ItemListAction,
+    Mode,
+)
 from src.utils.event import Event
+from src.views.text import Text
 
 
 class Player:
@@ -137,6 +142,54 @@ class Player:
             self.defense,
         ))
 
+    def open_item_list(self):
+        """アイテム一覧を開く
+        """
+        self.select_index = 0
+
+        while True:
+
+            Event.clear()
+            print(Text.MES_HOW_TO_PLAY)
+
+            # アイテム一覧表示
+            self.output_status()
+            self.output_item_list()
+
+            # アイテムなし
+            if not self.item_list:
+                self.mode_key = Mode.FIELD
+                return
+
+            input_key_obj = \
+                InputKeyServer.get_input_key_obj(Event.input_character())
+
+            # キー入力に応じた処理
+            self.action_in_item_list(input_key_obj)
+
+            # モード変更
+            if input_key_obj.item_list_action == ItemListAction.ESCAPE:
+                return
+
+    def action_in_item_list(self, key_obj: InputKey):
+        """アイテム一覧でのアクション
+
+        Args:
+            key_obj (InputKey): アクションキー
+        """
+
+        # カーソル移動
+        if key_obj.item_list_action == ItemListAction.MOVE:
+            self.select_index = key_obj.move_cursor(
+                len(self.item_list),
+                self.select_index,
+            )
+
+        # アイテム使用
+        if key_obj.item_list_action == ItemListAction.DECISION:
+            self.use_item()
+            self.select_index = 0
+
     def use_item(self):
         """アイテム使用
         """
@@ -231,8 +284,8 @@ class Player:
         monster.action_flg = True
         return Mode.BUTTLE
 
-    def output_win_buttle(self, monster):
-        """バトル勝利を出力
+    def win_buttle(self, monster):
+        """バトル勝利
 
         Args:
             monster (Monster): モンスター

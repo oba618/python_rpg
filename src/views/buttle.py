@@ -30,6 +30,7 @@ class Buttle:
     def mode_buttle(self):
         """バトルモード
         """
+        self.player.select_index = 0
 
         while self.mode == Mode.BUTTLE:
 
@@ -47,7 +48,7 @@ class Buttle:
             if self.is_dead(self.monster):
 
                 # プレイヤー勝利
-                self.player.output_win_buttle(self.monster)
+                self.player.win_buttle(self.monster)
 
                 # フィールドモードへ
                 self.mode = Mode.FIELD
@@ -175,53 +176,10 @@ class Buttle:
         return int(random() * 100) % 20 == 0 or self.counter % 50 == 0
 
     def mode_item_list(self):
-        """アイテム一覧を表示するループ
+        """アイテム一覧モード
         """
-
-        # インデックス初期化
-        self.player.select_index = 0
-
-        while self.mode == Mode.ITEM_LIST:
-
-            Event.clear()
-            print(Text.MES_HOW_TO_PLAY)
-
-            # アイテム一覧表示
-            self.player.output_status()
-            self.player.output_item_list()
-
-            # アイテムなしの場合
-            if not self.player.item_list:
-                self.mode = Mode.BUTTLE
-                return
-
-            # キー入力に応じた処理
-            self.action_in_item_list(
-                InputKeyServer.get_input_key_obj(Event.input_character()))
-
-    def action_in_item_list(self, key_obj: InputKey):
-        """アイテム一覧でのアクション
-
-        Args:
-            key_obj (InputKey): キーオブジェクト
-        """
-
-        # カーソル移動
-        if key_obj.item_list_action == ItemListAction.MOVE:
-            self.player.select_index = key_obj.move_cursor(
-                len(self.player.item_list),
-                self.player.select_index,
-            )
-
-        # アイテム使用
-        if key_obj.item_list_action == ItemListAction.DECISION:
-            self.player.use_item()
-            self.player.select_index = 0
-
-        # バトルに戻る
-        if key_obj.item_list_action == ItemListAction.ESCAPE:
-            self.mode = Mode.BUTTLE
-            self.player.select_index = 0
+        self.player.open_item_list()
+        self.mode = Mode.BUTTLE
 
     def mode_status(self):
         """プレイヤーのステータス詳細を表示

@@ -91,6 +91,10 @@ class Map:
 
     def change_field(self, height: int, width: int):
         """現在位置を空地へ
+
+        Args:
+            height (int): 高
+            width (int): 幅
         """
 
         # 元の位置を空へ
@@ -149,6 +153,15 @@ class Map:
         return next_field
 
     def get_revers_point(self, height: int, width: int) -> tuple:
+        """反転させた座標の取得
+
+        Args:
+            height (int): 高
+            width (int): 幅
+
+        Returns:
+            tuple: (高, 幅)
+        """
 
         # 上へ
         if (self.now_h + height) < 0:
@@ -172,9 +185,13 @@ class Map:
 
         return height, width
 
-    def _scroll_field(
-            self, height: int, width: int, next_map_list):
+    def _scroll_field(self, height: int, width: int, next_map_list: list):
         """現在位置を空地へ
+
+        Args:
+            height (int): 高
+            width (int): 幅
+            next_map_list (list): 
         """
 
         # 元の位置を空へ
